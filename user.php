@@ -7,6 +7,7 @@ error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 session_start();
 
 require_once("config/koneksi.php");
+require_once("config/sqlsvr_connect.php");
 
 if($_POST['departemen_id'] <> ""){
 	$data = $crud->fetch("departemen","","departemen_id='".$_POST['departemen_id']."'");
