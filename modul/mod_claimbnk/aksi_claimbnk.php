@@ -1,7 +1,8 @@
 <?php 
 	error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 	session_start();
-	include "../../config/koneksi.php";
+	require_once( "../../config/koneksi.php");
+	require_once( "../../config/sqlsvr_connect.php");
 	
 	$module = $_GET['r'];
 	$act = $_GET['act'];
@@ -36,8 +37,29 @@
 	}
 	
 	if($module == "claimbnk" and $act == "approve"){
-		$_SESSION['message'] = $crud->message_success("Demo version only : </br>Claim Id : ".$_GET['clid']." has been approved successfully!!");
-		header("location:../../user.php?r=$module&mod=".$mod);	
+		$claim_number_system = $_GET['id'];
+		
+		$data = $crud->fetch("v_user_data","distinct departemen_id,group_id,module_id,c,r,u,d",
+		                     "departemen_id='$_SESSION[departemen_id]' and group_id = '$_SESSION[group_id]' 
+							 and module_id='".$mod."'");
+		if($data[0]['u'] == 1){	
+			try{
+				//cari tanggal dari claim number system terseubt
+				$claim = $crud->fetch("v_claim_bnk_header","claim_date","claim_number_system = '".$claim_number_system."'");
+								
+				//cari dulu yang nomor maksimal di sql server sesuai dengan tanggal claim claim
+				
+				
+				
+				
+				$_SESSION['message'] = $crud->message_success("Claim Number System : ".$claim_number_system." has been rejected successfully!!");				
+			}catch(exception $e){
+				$_SESSION['message'] = $crud->message_error($e->getmessage());
+			}
+		}else{
+			$_SESSION['message'] = $crud->module_alert();	
+		}
+		//header("location:../../user.php?r=$module&mod=".$mod);	
 	}
 	
 	if($module == "claimbnk" and $act == "reject"){
@@ -52,7 +74,7 @@
 							  "approve_by" => $_SESSION['username'],
 							  "tgl_approve" => date("y-m-d H:m:s"));
 				
-				$crud->update("claim_bnk",$data,"claim_number_system='".$claim_number_system."'");
+				$crud->update("claim_bnk",$data,"claim_number_system='".$claim_number_system."' and status not in('approved','rejected')");
 				$_SESSION['message'] = $crud->message_success("Claim Number System : ".$claim_number_system." has been rejected successfully!!");				
 			}catch(exception $e){
 				$_SESSION['message'] = $crud->message_error($e->getmessage());
