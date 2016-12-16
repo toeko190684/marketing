@@ -48,8 +48,21 @@
 				$claim = $crud->fetch("v_claim_bnk_header","claim_date","claim_number_system = '".$claim_number_system."'");
 								
 				//cari dulu yang nomor maksimal di sql server sesuai dengan tanggal claim claim
+				$journal = $crud_sql->fetch("ap_journal","max(journal_id)as journal_id","journal_date='2016-12-18'");
+				
+				if($journal[0]['journal_id'] == ""){
+					$journal_id = str_replace("-","",$claim[0]['claim_date'])."0001";
+				}else{
+					$journal_id = $journal[0]['journal_id']+1;
+				}
 				
 				
+				/*
+					update field journal_id dengan journal_id yang kita generate tadi.
+				*/
+				
+				$data = array("approve_by" => $_SESSION['username'],"status" => "approved","journal_id" => $journal_id);
+				$crud->update("claim_bnk",$data,"claim_number_system = '".$claim_number_system."' and status not in('approved','rejected')");
 				
 				
 				$_SESSION['message'] = $crud->message_success("Claim Number System : ".$claim_number_system." has been rejected successfully!!");				
@@ -59,7 +72,7 @@
 		}else{
 			$_SESSION['message'] = $crud->module_alert();	
 		}
-		//header("location:../../user.php?r=$module&mod=".$mod);	
+		header("location:../../user.php?r=$module&mod=".$mod);	
 	}
 	
 	if($module == "claimbnk" and $act == "reject"){
