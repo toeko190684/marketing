@@ -1,67 +1,3 @@
-<script>
-	$(document).ready(function(){
-		$('.form_date').datetimepicker({
-			language:  'id',
-			weekStart: 1,
-			todayBtn:  1,
-			autoclose: 1,
-			todayHighlight: 1,
-			startView: 2,
-			minView: 2,
-			forceParse: 0
-		});
-		
-		$("#reco_id").focusout(function(){
-			$.post("modul/mod_claimreco/get_reco.php",{ id : $(this).val() },function(data){
-				var obj = jQuery.parseJSON(data);
-				
-				
-				$("#distributor_id").val(obj.distributor_id);
-				$("#distributor_name").val(obj.distributor_name);
-				$("#reco_outstanding").val(obj.outstanding);
-				$("#description").val(obj.description);
-				$("#account_id").val(obj.account_id);
-				$("#account_name").val(obj.account_name);
-				
-				//fokus pada vendor id
-				$("#vendor_id").focus();
-			});
-		});
-		
-		$("#vendor_id").change(function(){
-			var vendor_id = $(this).val();
-			
-			$.post("modul/mod_claimreco/get_vendor.php",{ id : vendor_id },function(data){
-				var obj = jQuery.parseJSON(data);
-				
-				$("#vendor_name").val(obj.vendor_name);
-				$("#ap_account_type").val(obj.ap_account_type);
-				$("#ap_account_id").val(obj.ap_account_id);
-				
-				//fokus pada po so number_format
-				$("#po_so_number").focus();
-			});
-		});
-		
-		$("#claim_approved_ammount").focusout(function(){
-			var claim_ap = $(this).val();
-			var reco_out = $("#reco_outstanding").val();
-			var ppn = $("#ppn").val();
-			if(eval(claim_ap) > eval(reco_out)){
-				alert("claim approved ammout is bigger than reco outstanding!!");
-				$(this).val("0");
-				$("#total_claim_approved_ammount").val("0");
-				$(this).focus();
-			}else{
-				var total = (100+eval(ppn))*claim_ap/100;
-				$("#total_claim_approved_ammount").val(total);
-			}
-		});
-	});
-			
-</script>
-
-
 <?php 
 
 if($_POST['year'] != ""){
@@ -151,8 +87,8 @@ switch($_GET['act']){
 									<td align=\"right\">".number_format($value[claim_approved_ammount],0,'.',',')."</td>
 									<td><span class='$class'>".strtoupper($value['status'])."</span></td>
 									<td>
-										<a href=\"$aksi&act=approve&id=$value[claim_number_system]\" onclick=\"return confirm('Are you sure want to approve ? ')\"><span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\" ></span> Approve</a> |									
-										<a href=\"$aksi&act=reject&id=$value[claim_number_system]\" onclick=\"return confirm('Are you sure want to reject ? ')\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\" ></span> Reject</a> |									
+										<a href=\"$aksi&act=approve&id=$value[claim_number_system]\" onclick=\"return confirm('Are you sure want to approve  claim number : $value[claim_number_system]? ')\"><span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\" ></span> Approve</a> |									
+										<a href=\"$aksi&act=reject&id=$value[claim_number_system]\" onclick=\"return confirm('Are you sure want to reject claim number : $value[claim_number_system]? ')\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\" ></span> Reject</a> |									
 										<a href=\"?r=claimbnk&mod=".$_GET['mod']."&act=view&id=$value[claim_number_system]\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Detail</a> |
 										<a href=\"?r=claimbnk&mod=".$_GET['mod']."&act=edit&id=$value[claim_number_system]\"><span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit</a> 
 										</td>
@@ -193,7 +129,7 @@ switch($_GET['act']){
 						<div class="form-group">
 							<label>Claim Date : </label>
 							<div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-								<input class="form-control" name="claim_date" size="10" type="text" placeholder="YYYY-MM-DD" value="<?= $data[0]['claim_date'];?>">
+								<input class="form-control" name="claim_date" size="10" type="text" placeholder="YYYY-MM-DD" value="<?= $data[0]['claim_date'];?>" readonly>
 								<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
 							</div>
 						</div>
@@ -336,7 +272,7 @@ switch($_GET['act']){
 					<div class="col-sm-12 col-md-12 col-lg-12">
 						<a href="?r=claimbnk&mod=<?php echo $_GET[mod]; ?>&id=<?php echo $data[0][claim_number_system]; ?>" class="btn btn-primary" ><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</a>
 						<a href="<?= $aksi; ?>&act=approve&id=<?= $data[0][claim_number_system]; ?>" onclick="return confirm('Are you sure want approve claim number : <?= $data[0]['claim_number_system']; ?> ? ')" class="btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true" ></span> Approve</a> 									
-						<a href="<?= $aksi; ?>&act=reject&id=<?= $data[0][claim_number_system]; ?>" onclick="return confirm('Are you sure want reject claim id : <?= $data[0]['claim_number_system']; ?> ? ')" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> Reject</a> 									
+						<a href="<?= $aksi; ?>&act=reject&id=<?= $data[0][claim_number_system]; ?>" onclick="return confirm('Are you sure want reject claim number : <?= $data[0]['claim_number_system']; ?> ? ')" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> Reject</a> 									
 						<br><br>
 					</div>
 				</div>
