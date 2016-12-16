@@ -1,0 +1,207 @@
+103.2,Piutang Usaha Export            , , 
+601.2606,Biaya Event S & M BA            ,F,O
+601.2504,Biaya Perjalanan Dinas MD       ,F,O
+601.2805,Biaya Kirim Dokumen PDV         ,F,O
+601.2806,Biaya Kirim Dokumen RND         ,F,O
+601.1907,Biaya MT Others                 ,F,P
+601.2411,Biaya BBM S & M IB              ,F,O
+601.2412,Biaya Tol Parkir S & M IB       ,F,O
+601.2607,Biaya Entertaint S & M IB       ,F,O
+601.2608,Biaya Peralatan S & M BA        ,F,O
+601.2315,Biaya PPH 21 Ditanggung-Snack   ,F,P
+601.2316,Biaya PPH 21 Ditanggung-Candy   ,F,P
+601.2317,Biaya PPH 21 Ditanggung-Beverage,F,P
+601.2205,Biaya Insentif BA               ,F,P
+601.2008,B Promo BTL Snack-Agency Fee    ,F,P
+601.2815,Biaya Kirim Sample Int Business ,F,O
+601.2009,B Promo BTL Hi-Chew Agency Fee  ,F,P
+601.2652,Biaya Lain Lain Hi-Chew         ,F,O
+601.1001,Biaya Advertising Snack         ,F,P
+601.1002,Biaya Adv - Agency Fee Snack    ,F,P
+601.1003,Biaya Advertising Candy         ,F,P
+601.1004,Biaya Adv - Agency Fee Candy    ,F,P
+601.1006,Biaya Adv - Agency Fee Beverage ,F,P
+601.1005,Biaya Advertising Beverage      ,F,P
+601.2001,B Promo Below The Line Snack    ,F,P
+601.2002,B Promo Below The Line Candy    ,F,P
+601.2003,B Promo Below The Line Beverage ,F,P
+601.2004,B Promo Below The Line Group    ,F,P
+601.3401,Biaya Promo Sample Snack        ,F,O
+601.3402,Biaya Promo Sample Candy        ,F,O
+601.3403,Biaya Promo Sample Beverage     ,F,O
+601.3404,Biaya Promo Sample Group        ,F,O
+601.1701,Biaya Promo Sample Product Snack,V,P
+601.1702,Biaya Promo Sample Product Candy,V,P
+601.1703,Biaya Promo Sample Product Bev  ,V,P
+601.1801,Biaya Trade Promo Snack         ,V,P
+601.1802,Biaya Trade Promo Candy         ,V,P
+601.1803,Biaya Trade Promo Beverage      ,V,P
+601.1901,Biaya MT Key Account Trading Ter,V,P
+601.1902,Biaya MT Listing                ,F,P
+601.1903,Biaya MT Penalty                ,F,P
+601.1904,Biaya MT Trade Promo            ,V,P
+601.1905,Biaya MT Consumer Promo         ,V,P
+601.1906,Biaya MT Personnel              ,F,P
+601.2101,Biaya Meeting S & M Snack       ,F,O
+601.2102,Biaya Meeting S & M Candy       ,F,O
+601.2103,Biaya Meeting S & M Beverage    ,F,O
+601.2104,Biaya Meeting S & M Group       ,F,O
+601.2203,Biaya Insentif S & M Beverage   ,F,O
+601.2204,Biaya Insentif S & M Modern     ,F,O
+601.2401,Biaya BBM S & M Snack           ,F,O
+601.2402,Biaya BBM S & M Candy           ,F,O
+601.2403,Biaya BBM S & M Beverage        ,F,O
+601.2404,Biaya Tol dan Parkir S & M Snack,F,O
+601.2405,Biaya Tol dan Parkir S & M Candy,F,O
+601.2406,Biaya Tol dan Parkir S & M Bev  ,F,O
+601.2501,Biaya Perjalanan Dinas S&M Snack,F,O
+601.2502,Biaya Perjalanan Dinas S&M Candy,F,O
+601.2503,Biaya Perjalanan Dinas S&M Bev  ,F,O
+601.2601,Biaya Entertaint S & M Snack    ,F,O
+601.2602,Biaya Entertaint S & M Candy    ,F,O
+601.2603,Biaya Entertaint S & M Beverage ,F,O
+601.2701,Biaya Sewa Kendaraan S & M      ,F,O
+601.2801,Biaya Kirim Dokumen S & M Snack ,F,O
+601.2802,Biaya Kirim Dokumen S & M Candy ,F,O
+601.2803,Biaya Kirim Dokumen S & M Bev   ,F,O
+601.3001,Biaya BBM PDV & RND Snack       ,F,O
+601.3002,Biaya BBM PDV & RND Candy       ,F,O
+601.3003,Biaya BBM PDV & RND Beverage    ,F,O
+601.3004,Biaya Tol&Parkir PDV&RND Snack  ,F,O
+601.3005,Biaya Tol&Parkir PDV&RND Candy  ,F,O
+601.3006,Biaya Tol&Parkir PDV&RND Bev    ,F,O
+601.3101,Biaya PD PDV&RND Snack          ,F,O
+601.3102,Biaya PD PDV&RND Candy          ,F,O
+601.3103,Biaya PD PDV&RND Bev            ,F,O
+601.3201,Biaya Perlengkapan RT Snack     ,F,O
+601.2407,Biaya BBM S & M MT              ,F,O
+601.2408,Biaya Tol dan Parkir S & M MT   ,F,O
+601.2604,Biaya Entertaint S & M MT       ,F,O
+601.2409,Biaya BBM S & M BA              ,F,O
+601.241,Biaya Tol dan Parkir S & M BA   ,F,O
+601.2605,Biaya Entertaint S & M BA       ,F,O
+601.2609,Biaya Lain Lain BA              ,F,O
+601.3104,Biaya Ent PDV&RND Snack         ,F,O
+601.3106,Biaya Ent PDV&RND Beverage      ,F,O
+601.3105,Biaya Ent PDV&RND Candy         ,F,O
+601.3107,Biaya Meeting PDV&RND Snack     ,F,O
+601.3108,Biaya Meeting PDV&RND Candy     ,F,O
+601.3109,Biaya Meeting PDV&RND Beverage  ,F,O
+601.2804,Biaya Kirim Dokumen S & M BA    ,F,O
+601.2304,Beban Gaji S & M BA             ,F,P
+601.2105,Biaya Meeting S & M MT          ,F,O
+601.2106,Biaya Meeting S & M BA          ,F,O
+601.1908,Biaya MT Flush Out              ,V,P
+601.311,B Entertain PDV&RND Snack-Extern,F,O
+601.3112,B Entertain PDV&RND Bev-External,F,O
+601.2616,Biaya Entertain S&M Snack-Extern,F,O
+601.2617,Biaya Entertain S&M Candy-Extern,F,O
+601.2618,Biaya Entertain S&M Bev-External,F,O
+601.2619,Biaya Entertain S&M MT-External ,F,O
+601.262,Biaya Entertain S&M BA-External ,F,O
+601.2621,Biaya Entertain S&M IB-External ,F,O
+601.3202,Biaya Perlengkapan RT Candy     ,F,O
+601.3203,Biaya Perlengkapan RT Beverage  ,F,O
+601.3204,Pengurusan MD Snack             ,F,O
+601.3205,Pengurusan MD Candy             ,F,O
+601.3206,Pengurusan MD Beverage          ,F,O
+601.3207,Biaya Analisa RND Snack         ,F,O
+601.3208,Biaya Analisa RND Candy         ,F,O
+601.3209,Biaya Analisa RND Beverage      ,F,O
+601.3301,Biaya Pemusnahan Barang Rusak   ,F,O
+601.2413,Biaya BBM Markom                ,F,O
+601.2414,Biaya Tol&Parkir Markom         ,F,O
+601.2614,Biaya Lain Lain S&M IB          ,F,O
+601.2206,Biaya Insentif Grup             ,F,O
+601.261,Biaya Lain Lain S&M Snack       ,F,O
+601.2611,Biaya Lain Lain S&M Candy       ,F,O
+601.2612,Biaya Lain Lain S&M Beverage    ,F,O
+601.2615,Biaya Analisa S&M IB            ,F,O
+601.2624,Biaya Trucking & Handling Export,F,P
+601.2625,Biaya Promosi BA                ,F,P
+107.1006,Asuransi Kecelakaan Dibyr dimuka,F,O
+601.2322,Biaya PPH 21 Ditanggung-MT      ,F,P
+601.2613,Biaya Lain Lain S&M Markom      ,F,O
+601.2623,B Pemelhran&Perawatan Mbl BA    ,F,O
+601.3008,Biaya Lain Lain PDV&RND Candy   ,F,O
+601.3009,Biaya Lain Lain PDV&RND Beverage,F,O
+601.2508,Biaya Perjalanan Dinas SM Markom,F,O
+601.2328,Biaya PPH 23 Ditanggung Snack   ,F,O
+601.2329,Biaya PPH 23 Ditanggung Candy   ,F,O
+601.233,Biaya PPH 23 Ditanggung Beverage,F,O
+601.2629,Biaya Entertaint S&M Grup-Extern,V,O
+601.2631,Biaya Event S&M MT              ,V,O
+601.2506,Biaya Perjalanan Dinas BA       ,F,O
+601.3007,Biaya Lain Lain PDV&RND Snack   ,F,O
+601.263,Biaya Lain Lain S&M Grup        ,F,P
+601.2507,Biaya Perjalanan Dinas S&M IB   ,F,O
+601.2807,Biaya Kirim Dokumen S&M IB      ,F,O
+601.2321,Biaya PPH 21 Ditanggung-BA      ,F,P
+601.2626,Biaya Event SM Snack            ,V,P
+601.2627,Biaya Event SM Candy            ,V,P
+601.2628,Biaya Event SM Beverage         ,V,P
+601.2415,Biaya BBM S&M-Candy II          ,F,O
+601.2416,Biaya Tol Parkir S&M-Candy II   ,F,O
+601.2632,Biaya Training&Seminar SM       ,F,O
+601.2419,Biaya BBM S&M Chocofun          ,F,O
+601.242,Biaya Tol&Parkir S&M Chocofun   ,F,O
+601.2511,Biaya PD S&M Chocofun           ,F,O
+601.2107,Biaya Meeting S&M Chocofun      ,F,O
+601.1805,Biaya Trade Promo Chocofun      ,V,P
+601.2006,B Promo Below The Line Chocofun ,V,P
+601.281,Biaya Kirim Dokumen S&M Chocofun,F,O
+601.264,Biaya Entertain Ext S&M-Chocofun,F,O
+601.3822,B PPH 4 AYAT 2 Ditanggung BV    ,F,O
+601.2812,Biaya Kirim Dokumen Group       ,F,O
+601.2334,Biaya PPH 23 Ditanggung SM BA   ,F,O
+601.2633,Biaya Lain Lain S&M-Candy II    ,V,P
+601.2509,Biaya PD SM-CANDY II            ,F,O
+601.2642,Biaya Lain Lain Choco Fun       ,F,O
+601.2643,Biaya Event SM IB               ,F,O
+601.2369,B. PPH 23 Ditanggung Marcom     ,F,O
+601.2644,Biaya Event SM Choco Fun        ,F,O
+601.2645,Biaya Event SM Grup             ,F,O
+601.3805,B PPH 21 Ditanggung MT          ,F,O
+601.3806,B PPH 21 Ditanggung Grup        ,F,O
+601.3815,B PPH 26 Ditanggung Candy       ,F,O
+601.3819,B PPH 26 Ditanggung Grup        ,F,O
+601.3821,B PPH 21 Ditanggung PDV         ,F,O
+601.2634,Biaya Entertain S&M-Candy II    ,V,P
+601.2811,Biaya Kirim Sampel S&M Chocofun ,F,O
+601.236,Biaya PPH 21 Ditanggung-Grup    ,F,P
+601.2646,Bi Entertain Int S&M - Chocofun ,F,O
+601.382,B PPH 26 Ditanggung PDV         ,F,O
+601.1704,B Promo Sample Product Hi Chew  ,V,P
+601.2813,Biaya Kirim Sample Snack        ,F,O
+601.2814,Biaya Kirim Sample Beverage     ,F,O
+601.1804,Biaya Trade Promo Candy II      ,V,P
+601.2005,B Promo Below The Line CDY II   ,V,P
+601.251,Biaya Perjalanan Dinas S&M Grup ,V,O
+601.2635,Biaya Entertain Ext S&M-Candy II,V,P
+601.2636,B Trucking & Handlling Exp IB   ,V,P
+601.2637,Biaya Peralatan BDV BVR         ,V,O
+601.2417,Biaya BBM S&M Grup              ,F,O
+601.2418,Biaya Tol&Parkir S&M Grup       ,F,O
+601.2808,Biaya Kirim Dokumen S&M Candy II,F,O
+601.2362,Biaya Gaji Salesman Motoris Bev ,F,P
+601.1007,Biaya Adv - Agency Fee Event BA ,F,P
+601.2639,Biaya Peralatan BDV CDY         ,F,O
+601.1008,Biaya Advertising BA            ,F,P
+601.2809,Biaya Kirim Sampel RND          ,F,O
+601.2365,B THR & Bonus SPG BA            ,F,O
+601.2366,B THR & Bonus SPG MT            ,F,O
+601.2368,B. PPH 23 Ditanggung Grup       ,F,O
+601.3804,B PPH 21 Ditanggung BA          ,F,O
+601.1009,Biaya Advertising Chocofun      ,F,P
+601.1011,Biaya Advertising Chew2Ball     ,F,P
+601.101,Biaya Adv - Agency Fee Chocofun ,F,P
+601.1012,Biaya Adv - Agency Fee Chew2Ball,F,P
+601.2648,Bi Entertaint Internal S&M Grup ,F,O
+601.265,Bi Event S&M Hi-Chew            ,V,P
+601.321,Pengurusan MD Chew-chew Ball    ,F,O
+601.1705,B Promo Sample Product Chocofun ,V,P
+601.1706,B Promo Sample Product Chew2Ball,V,P
+601.3823,B PPH 23 Ditanggung IB          ,F,O
+601.3211,Pengurusan MD IB                ,F,O
+601.2007,B Promo Below The Line Hi-Chew  ,V,P
+601.1806,Biaya Trade Promo Hi-Chew       ,V,P
