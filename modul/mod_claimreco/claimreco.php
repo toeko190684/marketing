@@ -67,22 +67,6 @@
 $aksi = "modul/mod_claimreco/aksi_claimreco.php?r=claimreco&mod=".$_GET['mod'];
 
 
-if($_GET['id'] == ""){
-	if($_POST['budget_id'] == ""){
-		if($_SESSION['budget_id'] == ""){
-			$budget = $crud->fetch("budget","budget_id","departemen_id='".$_SESSION['departemen_id']."' 
-									   and approval1<>'' and posting = 0 order by start_date asc");
-			$_SESSION['budget_id'] = $budget[0]['budget_id'];
-		}else{
-			$_SESSION['budget_id'] = $_SESSION['budget_id'];
-		}
-	}else{
-		$_SESSION['budget_id'] = $_POST['budget_id'];
-	}
-}else{
-	$_SESSION['budget_id'] = $_GET['id'];
-}
-
 
 switch($_GET['act']){
 	default :	
@@ -95,17 +79,18 @@ switch($_GET['act']){
 				
 				<form method="post"  class="form-inline" >
 					<div class="form-group nav navbar-right" style="padding-right:15px">	
-						<label>Budget Id : </label>
-						<select name="budget_id" class="form-control">
-							<option value="<?php  echo $_SESSION['budget_id']; ?>"><?php echo $_SESSION['budget_id'];?></option>
+						<label>Year : </label>
+						<select name="year" class="form-control">
+							<option value="<?php  echo $_SESSION['year']; ?>"><?php echo $_SESSION['year'];?></option>
 							<?php 
-								$data = $crud->fetch("budget","","year(start_date)='".$_SESSION['year']."'
-													 and departemen_id='".$_SESSION['departemen_id']."' and approval1<>''");
+								$data = $crud->fetch("v_claim_reco","distinct year(claim_date)as year","year(claim_date)='".$_SESSION['year']."'
+													 and departemen_id='".$_SESSION['departemen_id']."'");
 								foreach($data as $value){
-									echo "<option value=\"$value[budget_id]\">".$value['budget_id']."</option>";
+									echo "<option value=\"$value[year]\">".$value['year']."</option>";
 								}
 							?>
 						</select>
+						<input type="text" name="reco_id" class="form-control" placeholder="Claim Id">
 						<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 					</div>
 				</form>
@@ -130,7 +115,7 @@ switch($_GET['act']){
 						//ini adalah halaman paging
 						
 						$per_hal = 10;
-						$jumlah_record = $crud->fetch("v_claim_reco","","budget_id='".$_SESSION['budget_id']."'
+						$jumlah_record = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
 													  and departemen_id = '".$_SESSION['departemen_id']."'");
 						
 						$jum = count($jumlah_record);
@@ -138,7 +123,7 @@ switch($_GET['act']){
 						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
 						$start = ($page - 1) * $per_hal;
 						
-						$data = $crud->fetch("v_claim_reco","","budget_id='".$_SESSION['budget_id']."' 
+						$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
 											 and departemen_id = '".$_SESSION['departemen_id']."'
 											 limit $start,$per_hal");			
 						

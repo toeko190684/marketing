@@ -120,6 +120,16 @@
 			}
 			return $date;
 		}
+		
+		public function sendmail($from,$subject,$message){
+			$headers = "From: noreply.skproject@morinaga-kino.co.id\r\n";
+			$headers .= "Reply-to: noreply.skproject@morinaga-kino.co.id\r\n";
+			$headers .= "MIME-Version: 1.0\r\n";
+			$headers .= "Content-Type: text/html; charset=UTF-8\r\n"; 
+
+			// send email
+			@mail($from,$subject,$message,$headers);
+		}
 
 	}
 	
