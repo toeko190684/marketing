@@ -159,7 +159,7 @@ switch($_GET['act']){
 									<td><span class='$class'>".strtoupper($value['status'])."</span></td>
 									<td>
 										<a href=\"?r=recobudget&mod=64&act=view&id=$value[budget_id]&recid=$value[reco_id]\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Detail</a> |
-										<a href=\"?r=claimreco&mod=72&id=$value[budget_id]\"><span class=\"glyphicon glyphicon-usd\" aria-hidden=\"true\"></span> Claim</a>
+										<a href=\"?r=claimreco&mod=72&id=$value[reco_id]\"><span class=\"glyphicon glyphicon-usd\" aria-hidden=\"true\"></span> Claim</a>
 									</td>
 								</tr>";
 						}

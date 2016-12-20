@@ -28,8 +28,11 @@ switch($_GET['act']){
 		?>
 			<div class="col-md-12">
 				<a href="?r=budget&mod=<?php echo $_GET['mod'];?>&act=add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a>	
-				<a href="?r=budgetapproval&mod=63&act=update" class="btn btn-primary"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> Pending Approval</a>
-				<h2>List of Approved Budget</h2>
+				<!--
+					** ditiadakan karena sudah dihandle di sini
+					<a href="?r=budgetapproval&mod=63&act=update" class="btn btn-primary"><span class="glyphicon glyphicon-hourglass" aria-hidden="true"></span> Pending Approval</a>
+				-->
+				<h2>List of Budget</h2>
 				<form method="post"  class="form-inline">
 					<div class="form-group nav navbar-right" style="padding-right:15px">	
 						<label>Year : </label>
@@ -60,6 +63,7 @@ switch($_GET['act']){
 						<td>Reco</td>
 						<td>Outstanding</td>
 						<td>Approval 1</td>
+						<td>Open/Close</td>
 						<td>Status</td>
 						<td>Action</td>
 					</tr>
@@ -71,12 +75,10 @@ switch($_GET['act']){
 						$per_hal = 10;
 						if($_POST['budget_id'] == ""){
 							$jumlah_record = $crud->fetch("v_budget_summary","","departemen_id = '".$_SESSION['departemen_id']."' 
-														  and year(start_date)='".$_SESSION['year']."' 
-														  and approval1<>''");
+														  and year(start_date)='".$_SESSION['year']."'");
 						}else{
 							$jumlah_record = $crud->fetch("v_budget_sumamary","","departemen_id = '".$_SESSION['departemen_id']."' 
-														  and year(start_date)='".$_SESSION['year']."'
-														  and approval1<>'' and budget_id='".$_POST['budget_id']."'");
+														  and year(start_date)='".$_SESSION['year']."' and budget_id='".$_POST['budget_id']."'");
 						}
 						$jum = count($jumlah_record);
 						$halaman = ceil($jum/$per_hal);
@@ -85,12 +87,10 @@ switch($_GET['act']){
 						
 						if($_POST['budget_id'] == ""){
 							$data = $crud->fetch("v_budget_summary","","departemen_id = '".$_SESSION['departemen_id']."' 
-												 and year(start_date)='".$_SESSION['year']."' 
-												 and approval1<>'' limit $start,$per_hal");			
+												 and year(start_date)='".$_SESSION['year']."' limit $start,$per_hal");			
 						}else{
 							$data = $crud->fetch("v_budget_summary","","departemen_id = '".$_SESSION['departemen_id']."' 
-												 and year(start_date)='".$_SESSION['year']."'
-											     and approval1<>'' and budget_id='".$_POST['budget_id']."'
+												 and year(start_date)='".$_SESSION['year']."' and budget_id='".$_POST['budget_id']."'
 												 limit $start,$per_hal");	
 						}
 						
@@ -109,6 +109,14 @@ switch($_GET['act']){
 									$ket = "Open";
 								}
 								
+								if(strtoupper($value['status']) == "APPROVED" ){ 
+									$class="label label-success"; 
+								}else if(strtoupper($value['status']) == "REJECTED" ){
+									$class="label label-danger";
+								}else{ 
+									$class="label label-warning";
+								}
+								
 								
 								
 								echo "<tr>
@@ -124,12 +132,16 @@ switch($_GET['act']){
 										<td>
 											<a href=\"$aksi2?r=budget&mod=65&act=openclose&id=$value[budget_id]&ket=$ket\" 
 												onClick=\"return confirm('Are you sure want to $ket?');\">
-												<span class='$class'>".$post."</span>
+												<span class='$class'>".strtoupper($post)."</span>
 											</a>
 										</td>
+										<td align=\"right\"><span class=\"$class\">".strtoupper($value['status'])."</span></td>
 										<td>
 											<a href=\"?r=detailbudget&mod=".$_GET['mod']."&id=$value[budget_id]\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Detail</a> |
-											<a href=\"?r=budget&mod=".$_GET['mod']."&act=edit&id=$value[budget_id]\"><span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit</a> 
+											<a href=\"?r=budget&mod=".$_GET['mod']."&act=edit&id=$value[budget_id]\"><span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit</a> |
+											<a href=\"$aksi&act=approval&id=$value[budget_id]&status=approved\" onclick=\"return confirm('Are you sure want to Approve budget id $value[budget_id] ?')\"><span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\"></span> Approve</a> |
+											<a href=\"$aksi&act=approval&id=$value[budget_id]&status=rejected\" onclick=\"return confirm('Are you sure want to Reject budget id $value[budget_id] ?')\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\"></span> Reject</a> |
+											<a href=\"$aksi&act=del&id=$value[budget_id]\" onclick=\"return confirm('This record will be deleted, Are you sure ? ')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\" ></span> Delete</a> 									
 										</td>
 									</tr>";
 									

@@ -31,7 +31,7 @@
 	}
 	
 	if($module == "claimreco" and $act == "add"){
-		$claim_prefix = $_POST['claim_prefix'];
+		$claim_prefix = "/CL-".$_SESSION['departemen_id']."/".date("m",strtotime($_POST['claim_date']))."/".date("Y",strtotime($_POST['claim_date']));
 		$claim_date = $_POST['claim_date'];
 		$claim_number_dist = $_POST['claim_number_dist'];
 		$distributor_id = $_POST['distributor_id'];
@@ -47,8 +47,9 @@
 		$status = $_POST['status'];
 		
 		$yyyy_mm = substr($_POST['claim_date'],0,7);
+		
 				
-		$cari_claim = $crud->fetch("v_claimreco_number","","reco_id='".$reco_id."'");
+		$cari_claim = $crud->fetch("v_claimreco_number","","departemen_id='".$_SESSION['departemen_id']."' and periode ='".$yyyy_mm."'");
 		
 		if(count($cari_claim) <= 0){
 			$claim_id = "0001".$claim_prefix;
@@ -77,7 +78,7 @@
 								  "claim_approved_ammount" => $claim_approved_ammount,
 								  "account_id" => $account_id,
 								  "vendor_id" => $vendor_id,
-								  "status" => $status,								  
+								  "status" => "pending",								  
 								  "created_by" => $_SESSION['username'],
 								  "created_date" => date('Y-m-d H:m:s'));
 					$sql = $crud->insert("claim_reco",$data);					

@@ -28,7 +28,7 @@ switch($_GET['act']){
 		
 		?>
 			<div class="col-sm-12 col-md-12 col-lg-12">
-				<a href="?r=budgetapproval&mod=63&id=<?php echo $_GET['id'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</a>	
+				<a href="?r=budget&mod=13&id=<?php echo $_GET['id'];?>" class="btn btn-primary"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</a>	
 				<a href="?r=detailbudget&mod=<?php echo $_GET['mod'];?>&act=add" class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add</a>	
 				
 				<h2>List of Detail Budget #<?php echo $_GET['id'];?></h2>
@@ -55,7 +55,7 @@ switch($_GET['act']){
 				<thead>
 					<tr>
 						<td>No.</td>
-						<td>Account Id - Name</td>
+						<td>Class Id - Name</td>
 						<td>Start</td>
 						<td>Additional</td>
 						<td>Relokasi</td>
@@ -96,7 +96,7 @@ switch($_GET['act']){
 										<a href=\"?r=relocationbudget&mod=68&id=$value[budget_id]&classid=$value[class_id]\"><span class=\"glyphicon glyphicon-heart\" aria-hidden=\"true\"></span> Relokasi</a> |
 										<a href=\"?r=detailbudget&mod=64&act=view&id=$value[budget_id]&classid=$value[class_id]\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Detail</a> |
 										<a href=\"?r=detailbudget&mod=".$_GET['mod']."&act=edit&id=$value[budget_id]&classid=$value[class_id]\"><span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit</a> |
-										<a href=\"$aksi&act=del&id=$value[budget_id]&classid=$value[class_id]\" onclick=\"return confirm('This record will be deleted, Are you sure ? ')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\" ></span> Del</a> 									
+										<a href=\"$aksi&act=del&id=$value[budget_id]&classid=$value[class_id]\" onclick=\"return confirm('This record will be deleted, Are you sure ? ')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\" ></span> Delete</a> 									
 									</td>
 								</tr>";
 						}

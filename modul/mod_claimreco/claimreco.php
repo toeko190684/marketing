@@ -90,7 +90,7 @@ switch($_GET['act']){
 								}
 							?>
 						</select>
-						<input type="text" name="reco_id" class="form-control" placeholder="Claim Id">
+						<input type="text" name="claim_id" class="form-control" placeholder="Claim Id">
 						<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 					</div>
 				</form>
@@ -115,18 +115,31 @@ switch($_GET['act']){
 						//ini adalah halaman paging
 						
 						$per_hal = 10;
-						$jumlah_record = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
-													  and departemen_id = '".$_SESSION['departemen_id']."'");
-						
+						if($_POST['claim_id'] == ""){
+							$jumlah_record = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
+														  and departemen_id = '".$_SESSION['departemen_id']."'");
+						}else{
+							$jumlah_record = $crud->fetch("v_claim_reco","","claim_id='".$_POST['claim_id']."'");
+						}
 						$jum = count($jumlah_record);
 						$halaman = ceil($jum/$per_hal);
 						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
 						$start = ($page - 1) * $per_hal;
 						
-						$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
-											 and departemen_id = '".$_SESSION['departemen_id']."'
-											 limit $start,$per_hal");			
-						
+						if($_POST['claim_id'] == ""){
+							if($_GET['id'] == ""){
+								$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
+													 and departemen_id = '".$_SESSION['departemen_id']."'
+													 limit $start,$per_hal");			
+							}else{
+								$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
+													 and departemen_id = '".$_SESSION['departemen_id']."' and reco_id='".$_GET['id']."'
+													 limit $start,$per_hal");		
+							}
+						}else{
+							$data = $crud->fetch("v_claim_reco","","claim_id='".$_POST['claim_id']."'
+												 limit $start,$per_hal");			
+						}
 						
 						$no = 1;
 						foreach($data as $value){							
