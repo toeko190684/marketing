@@ -104,6 +104,6 @@
 		}else{
 			$_SESSION['message'] = $crud->module_alert();	
 		}
-		header("location:../../user.php?r=$module&mod=".$mod);
+		header("location:../../user.php?r=$module&mod=".$mod."&id=".$budget_id);
 	}
 ?>

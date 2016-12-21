@@ -14,12 +14,12 @@
 		if($data[0]['d'] == 1){	
 			try{
 				//cek status budget apakah sudah posting
-				$cek = $crud->fetch("budget","posting","budget_id='".$_GET['id']."'");
-				if($cek[0]['posting'] == 0){		
+				$cek = $crud->fetch("budget","posting","budget_id='".$_GET['id']."' and posting=0 and status='approved'");
+				if(count($cek) > 0){		
 					$sql = $crud->delete("detail_budget","budget_id = '".$_GET['id']."' and class_id='".$_GET['classid']."'");			
 					$_SESSION['message'] = $crud->message_success("Budget ID : ".$_GET['id']." and Class Id : ".$_GET['classid']." has been deleted successfully !!");				
 				}else{
-					$_SESSION['message'] = $crud->message_error("Class Id : ".$_GET['classid']." can't delete, because budget Id : ".$_GET['id']." has been closed!");
+					$_SESSION['message'] = $crud->message_error("Class Id : ".$_GET['classid']." can't delete, because budget Id : ".$_GET['id']." has been closed or rejected!");
 				}
 			}catch(exception $e){
 				$_SESSION['message'] = $crud->message_error($e->getmessage());
@@ -41,15 +41,15 @@
 		if($data[0]['c'] == 1){				
 			try{
 				//cek status budget apakah sudah posting
-				$cek = $crud->fetch("budget","posting","budget_id='".$budget_id."'");
-				if($cek[0]['posting'] == 0){				
+				$cek = $crud->fetch("budget","posting,status","budget_id='".$budget_id."' and posting=0 and status='approved'");
+				if(count($cek) > 0){				
 					$data = array("budget_id" => $budget_id, "class_id" => $class_id, "total" => $total,
 								  "created_by" => $_SESSION['username']);
 					$sql = $crud->insert("detail_budget",$data);
 					
 					$_SESSION['message'] = $crud->message_success("Budget ID : ".$budget_id." and class Id : ".$class_id." has been added successfully!!");				
 				}else{
-					$_SESSION['message'] = $crud->message_error("Class Id : ".$class_id." can't insert, because budget Id : ".$budget_id." has been closed!");
+					$_SESSION['message'] = $crud->message_error("Class Id : ".$class_id." can't insert, because budget Id : ".$budget_id." has been closed or rejected!");
 				}
 			}catch(exception $e){
 				$_SESSION['message'] = $crud->message_error($e->getmessage());

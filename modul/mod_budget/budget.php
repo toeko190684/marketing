@@ -110,11 +110,11 @@ switch($_GET['act']){
 								}
 								
 								if(strtoupper($value['status']) == "APPROVED" ){ 
-									$class="label label-success"; 
+									$class1="label label-success"; 
 								}else if(strtoupper($value['status']) == "REJECTED" ){
-									$class="label label-danger";
+									$class1="label label-danger";
 								}else{ 
-									$class="label label-warning";
+									$class1="label label-warning";
 								}
 								
 								
@@ -135,7 +135,7 @@ switch($_GET['act']){
 												<span class='$class'>".strtoupper($post)."</span>
 											</a>
 										</td>
-										<td align=\"right\"><span class=\"$class\">".strtoupper($value['status'])."</span></td>
+										<td align=\"right\"><span class=\"$class1\">".strtoupper($value['status'])."</span></td>
 										<td>
 											<a href=\"?r=detailbudget&mod=".$_GET['mod']."&id=$value[budget_id]\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Detail</a> |
 											<a href=\"?r=budget&mod=".$_GET['mod']."&act=edit&id=$value[budget_id]\"><span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit</a> |

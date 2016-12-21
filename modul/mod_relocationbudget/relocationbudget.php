@@ -19,9 +19,9 @@
 		
 		$("#class_id").change(function(){
 			$budgetid = $("#budget_id").val();
-			$accid = $(this).val();
+			$classid = $(this).val();
 			
-			$.get("modul/mod_relocationbudget/get_outstanding.php?buid="+$budgetid+"&accid="+$accid,function(data){
+			$.get("modul/mod_relocationbudget/get_outstanding.php?buid="+$budgetid+"&classid="+$classid,function(data){
 				$("#outstanding_budget").val(data);
 			});			
 		});
@@ -58,21 +58,22 @@
 
 $aksi = "modul/mod_relocationbudget/aksi_relocationbudget.php?r=relocationbudget&mod=".$_GET['mod'];
 
-
-if($_GET['id'] == ""){
-	if($_POST['budget_id'] == ""){
-		if($_SESSION['budget_id'] == ""){
-			$budget = $crud->fetch("budget","budget_id","departemen_id='".$_SESSION['departemen_id']."' 
-									and approval1<>'' and posting = 0 order by start_date asc");
-			$_SESSION['budget_id'] = $budget[0]['budget_id'];
-		}else{
-			$_SESSION['budget_id'] = $_SESSION['budget_id'];
-		}
+if($_POST['budget_id'] == "" ){
+	if($_GET['id'] == ""){
+		$data = $crud->fetch("budget","budget_id","departemen_id='".$_SESSION['departemen_id']."' 
+							  and status='approved' order by budget_id desc limit 1");
+		$_SESSION['budget_id'] = $data[0]['budget_id'];
 	}else{
-		$_SESSION['budget_id'] = $_POST['budget_id'];
-	}
+		$_SESSION['budget_id'] = $_GET['id'];
+	}	
 }else{
-	$_SESSION['budget_id'] = $_GET['id'];
+	$_SESSION['budget_id'] = $_POST['budget_id'];
+}
+
+if($_POST['class_id'] == ""){
+	$_SESSION['class_id'] = $_GET['classid'];	
+}else{
+	$_SESSION['class_id'] = $_POST['class_id'];
 }
 
 
@@ -88,16 +89,28 @@ switch($_GET['act']){
 				<form method="post"  class="form-inline" >
 					<div class="form-group nav navbar-right" style="padding-right:15px">	
 						<label>Budget Id : </label>
-						<select name="budget_id" class="form-control">
+						<select name="budget_id" id="budget_id" class="form-control">
 							<option value="<?php  echo $_SESSION['budget_id']; ?>"><?php echo $_SESSION['budget_id'];?></option>
 							<?php 
 								$data = $crud->fetch("budget","","year(start_date)='".$_SESSION['year']."'
-													 and departemen_id='".$_SESSION['departemen_id']."' and approval1<>''");
+													 and departemen_id='".$_SESSION['departemen_id']."' and status='approved'");
 								foreach($data as $value){
 									echo "<option value=\"$value[budget_id]\">".$value['budget_id']."</option>";
 								}
 							?>
 						</select>
+						<span id="classid">
+							<label>Class Id : </label>
+							<select name="class_id" id="class_id" class="form-control">
+								<option value="<?php  echo $_SESSION['class_id']; ?>"><?php echo $_SESSION['class_id'];?></option>
+								<?php 
+									$data = $crud->fetch("v_detail_budget","class_id,class_name","budget_id='".$_SESSION['budget_id']."'");
+									foreach($data as $value){
+										echo "<option value=\"$value[class_id]\">".$value['class_id']." - ".$value['class_name']."</option>";
+									}
+								?>
+							</select>
+						</span>
 						<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 					</div>
 				</form>
@@ -120,18 +133,27 @@ switch($_GET['act']){
 						//ini adalah halaman paging
 						
 						$per_hal = 10;
-						$jumlah_record = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."'
-													  and departemen_id='".$_SESSION['departemen_id']."'");
+						if($_SESSION['class_id'] == ""){
+							$jumlah_record = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."'
+														  and departemen_id='".$_SESSION['departemen_id']."'");
+						}else{
+							$jumlah_record = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."'
+														  and class_id = '".$_SESSION['class_id']."'");
+						}
 						
 						$jum = count($jumlah_record);
 						$halaman = ceil($jum/$per_hal);
 						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
 						$start = ($page - 1) * $per_hal;
 						
-						$data = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."' 
-											 and departemen_id='".$_SESSION['departemen_id']."'
-											 limit $start,$per_hal");			
-						
+						if($_SESSION['class_id'] == ""){
+							$data = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."' 
+													 limit $start,$per_hal");			
+						}else{
+							$data = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."' 
+													 and class_id='".$_SESSION['class_id']."'
+													 limit $start,$per_hal");			
+						}
 						
 						$no = 1;
 						foreach($data as $value){							
@@ -189,7 +211,7 @@ switch($_GET['act']){
 						</div>
 						<div class="form-group" id="classid">
 							<label>From Class Id : </label>
-							<select type="text" class="form-control" name="class_id" id="classid">
+							<select type="text" class="form-control" name="class_id" id="class_id">
 								<option value="">-- Choose Class --</option>
 								<?php 
 									$data = $crud->fetch("v_detail_budget","class_id,class_name","budget_id='".$_SESSION['budget_id']."' order by budget_id");
@@ -264,7 +286,7 @@ switch($_GET['act']){
 		$data = $crud->fetch("v_relokasi_budget","","budget_id='$_GET[id]' and relokasi_id='".$_GET[relid]."'");			
 		?>
 			<div class="col-md-4">				
-				<a href="?r=relocationbudget&mod=<?php echo $_GET[mod]; ?>&id=<?php echo $_GET[id]; ?>" class="btn btn-primary" ><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</a>
+				<a href="?r=relocationbudget&mod=<?php echo $_GET[mod]; ?>&id=<?php echo $_GET[id]; ?>&classid=<?= $data[0][class_id] ?>" class="btn btn-primary" ><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</a>
 				<br><br>
 				<table class="table table-stripped table-hover">
 					<tr>
@@ -274,7 +296,7 @@ switch($_GET['act']){
 						<td><strong>Relocation Id : </strong></td><td><?php echo $data[0]['relokasi_id']; ?></td>
 					</tr>
 					<tr>
-						<td><strong>Account ID : </strong></td><td><?php echo $data[0]['account_id']." / ".$data[0]['account_name']; ?></td>
+						<td><strong>Class ID : </strong></td><td><?php echo $data[0]['class_id']." / ".$data[0]['class_name']; ?></td>
 					</tr>
 					<tr>
 						<td><strong>Description : </strong></td><td><?php echo $data[0]['description']; ?></td>

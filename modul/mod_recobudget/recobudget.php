@@ -444,7 +444,7 @@ switch($_GET['act']){
 								<td><strong>Total : </strong></td><td><?php echo number_format($data[0]['total'],0,'.',','); ?></td>
 							</tr>
 							<tr>
-								<td><strong>Total allow Max : </strong></td><td><?php echo number_format($data[0]['total_allow_max'],0,'.',','); ?></td>
+								<td><strong>Total allow Max : </strong></td><td><?php echo number_format($data[0]['total_allow_used'],0,'.',','); ?></td>
 							</tr>
 							<tr>
 								<td><strong>Cost Rasio : </strong></td><td><?php echo $data[0]['cost_rasio']; ?></td>

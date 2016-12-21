@@ -193,7 +193,7 @@ switch($_GET['act']){
 
 /*   jika pilihan kondisinya adalah view */ 
 	case "view":
-			$data = $crud->fetch("v_detail_budget","","budget_id='".$_GET['id']."' and account_id='".$_GET['accid']."'");			
+			$data = $crud->fetch("v_detail_budget","","budget_id='".$_GET['id']."' and class_id='".$_GET['classid']."'");			
 		?>
 			<div class="col-md-4">				
 				<button type="button" class="btn btn-primary" onclick ="window.history.go(-1)"><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</button>
@@ -203,13 +203,13 @@ switch($_GET['act']){
 						<td><strong>Budget Id : </strong></td><td><?php echo $data[0]['budget_id']; ?></td>
 					</tr>
 					<tr>
-						<td><strong>Account Id : </strong></td><td><?php echo $data[0]['account_id']; ?></td>
+						<td><strong>Class Id : </strong></td><td><?php echo $data[0]['class_id']; ?></td>
 					</tr>
 					<tr>
-						<td><strong>Account Name : </strong></td><td><?php echo $data[0]['account_name']; ?></td>
+						<td><strong>Class Name : </strong></td><td><?php echo $data[0]['class_name']; ?></td>
 					</tr>
 					<tr>
-						<td><strong>Total : </strong></td><td><?php echo number_format($data[0]['total'],0,'.',','); ?></td>
+						<td><strong>Total : </strong></td><td><?php echo number_format($data[0]['start_budget'],0,'.',','); ?></td>
 					</tr>
 					<tr>
 						<td><strong>Created By : </strong></td><td><?php echo $data[0]['created_by']; ?></td>
