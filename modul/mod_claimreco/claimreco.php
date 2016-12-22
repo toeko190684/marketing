@@ -66,8 +66,6 @@
 
 $aksi = "modul/mod_claimreco/aksi_claimreco.php?r=claimreco&mod=".$_GET['mod'];
 
-
-
 switch($_GET['act']){
 	default :	
 		?>
@@ -121,6 +119,8 @@ switch($_GET['act']){
 						}else{
 							$jumlah_record = $crud->fetch("v_claim_reco","","claim_id='".$_POST['claim_id']."'");
 						}
+						
+						
 						$jum = count($jumlah_record);
 						$halaman = ceil($jum/$per_hal);
 						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
@@ -130,7 +130,7 @@ switch($_GET['act']){
 							if($_GET['id'] == ""){
 								$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
 													 and departemen_id = '".$_SESSION['departemen_id']."'
-													 limit $start,$per_hal");			
+													 limit $start,$per_hal");		
 							}else{
 								$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
 													 and departemen_id = '".$_SESSION['departemen_id']."' and reco_id='".$_GET['id']."'
