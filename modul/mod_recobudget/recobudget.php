@@ -63,20 +63,23 @@
 $aksi = "modul/mod_recobudget/aksi_recobudget.php?r=recobudget&mod=".$_GET['mod'];
 
 
-if($_GET['id'] == ""){
-	if($_POST['budget_id'] == ""){
-		if($_SESSION['budget_id'] == ""){
-			$budget = $crud->fetch("budget","budget_id","departemen_id='".$_SESSION['departemen_id']."' 
-									   and approval1<>'' and posting = 0 order by start_date asc");
-			$_SESSION['budget_id'] = $budget[0]['budget_id'];
-		}else{
-			$_SESSION['budget_id'] = $_SESSION['budget_id'];
-		}
+if($_POST['budget_id'] == "" ){
+	if($_GET['id'] == ""){
+		$data = $crud->fetch("budget","budget_id","departemen_id='".$_SESSION['departemen_id']."' 
+							  and status='approved' order by budget_id desc limit 1");
+		$_SESSION['budget_id'] = $data[0]['budget_id'];
 	}else{
-		$_SESSION['budget_id'] = $_POST['budget_id'];
-	}
+		$_SESSION['budget_id'] = $_GET['id'];
+	}	
 }else{
-	$_SESSION['budget_id'] = $_GET['id'];
+	$_SESSION['budget_id'] = $_POST['budget_id'];
+}
+
+
+if($_POST['class_id'] == ""){
+	$_SESSION['class_id'] = $_GET['classid'];	
+}else{
+	$_SESSION['class_id'] = $_POST['class_id'];
 }
 
 
@@ -93,16 +96,28 @@ switch($_GET['act']){
 				<form method="post"  class="form-inline" >
 					<div class="form-group nav navbar-right" style="padding-right:15px">	
 						<label>Budget Id : </label>
-						<select name="budget_id" class="form-control">
+						<select name="budget_id" id="budget_id" class="form-control">
 							<option value="<?php  echo $_SESSION['budget_id']; ?>"><?php echo $_SESSION['budget_id'];?></option>
 							<?php 
 								$data = $crud->fetch("budget","","year(start_date)='".$_SESSION['year']."'
-													 and departemen_id='".$_SESSION['departemen_id']."' and approval1<>''");
+													 and departemen_id='".$_SESSION['departemen_id']."' and status='approved'");
 								foreach($data as $value){
 									echo "<option value=\"$value[budget_id]\">".$value['budget_id']."</option>";
 								}
 							?>
 						</select>
+						<span id="class_id">
+							<label>Class Id : </label>
+							<select name="class_id" id="class_id" class="form-control">
+								<option value="<?php  echo $_SESSION['class_id']; ?>"><?php echo $_SESSION['class_id'];?></option>
+								<?php 
+									$data = $crud->fetch("v_detail_budget","class_id,class_name","budget_id='".$_SESSION['budget_id']."'");
+									foreach($data as $value){
+										echo "<option value=\"$value[class_id]\">".$value['class_id']." - ".$value['class_name']."</option>";
+									}
+								?>
+							</select>
+						</span>
 						<button type="submit" class="btn btn-warning"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
 					</div>
 				</form>
@@ -129,19 +144,27 @@ switch($_GET['act']){
 						//ini adalah halaman paging
 						
 						$per_hal = 10;
-						$jumlah_record = $crud->fetch("v_reco_budget","","budget_id='".$_SESSION['budget_id']."' 
-													  and departemen_id='".$_SESSION['departemen_id']."' 
-													  and status<>'pending'");
+						if($_SESSION['class_id'] == ""){
+							$jumlah_record = $crud->fetch("v_reco_budget","","budget_id='".$_SESSION['budget_id']."' 
+														  and status = 'approved'");
+						}else{
+							$jumlah_record = $crud->fetch("v_reco_budget","","budget_id='".$_SESSION['budget_id']."' 
+														  and status = 'approved' and class_id='".$_SESSION['class_id']."'");
+						}
+						
 						
 						$jum = count($jumlah_record);
 						$halaman = ceil($jum/$per_hal);
 						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
 						$start = ($page - 1) * $per_hal;
 						
-						$data = $crud->fetch("v_reco_budget","","budget_id='".$_SESSION['budget_id']."' 
-											 and departemen_id='".$_SESSION['departemen_id']."'
-											 and status<>'pending' limit $start,$per_hal");			
-						
+						if($_SESSION['class_id'] == ""){
+							$data = $crud->fetch("v_reco_budget","","budget_id='".$_SESSION['budget_id']."' 
+												 and status = 'approved' limit $start,$per_hal");			
+						}else{
+							$data = $crud->fetch("v_reco_budget","","budget_id='".$_SESSION['budget_id']."' 
+												 and status = 'approved' and class_id = '".$_SESSION['class_id']."' limit $start,$per_hal");			
+						}
 						
 						$no = 1;
 						foreach($data as $value){							
