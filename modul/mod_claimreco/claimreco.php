@@ -43,6 +43,13 @@
 			});
 		});
 		
+		$("#distributor_id").change(function(){
+			var distributor_id = $(this).val();
+			$.post("modul/mod_claimreco/get_distributor.php",{ id : distributor_id },function(data){
+				$("#distributor_name").val(data);
+			});			
+		});
+		
 		$("#claim_approved_ammount").focusout(function(){
 			var claim_ap = $(this).val();
 			var reco_out = $("#reco_outstanding").val();
@@ -114,8 +121,14 @@ switch($_GET['act']){
 						
 						$per_hal = 10;
 						if($_POST['claim_id'] == ""){
-							$jumlah_record = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
-														  and departemen_id = '".$_SESSION['departemen_id']."'");
+							if($_GET['id'] == ""){
+								$jumlah_record = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
+															  and departemen_id = '".$_SESSION['departemen_id']."'");
+							}else{
+								$jumlah_record = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
+															  and departemen_id = '".$_SESSION['departemen_id']."'
+															  and reco_id='".$_GET['id']."'");
+							}
 						}else{
 							$jumlah_record = $crud->fetch("v_claim_reco","","claim_id='".$_POST['claim_id']."'");
 						}
@@ -323,188 +336,148 @@ switch($_GET['act']){
 	
 	/*  jika pilihan kondisinya adalah edit */	
 	case "edit":
-			$data = $crud->fetch("v_additional_budget","","budget_id='$_GET[id]' and additional_id='".$_GET['addid']."'");
+			$data = $crud->fetch("v_claim_reco","","claim_id='".$_GET['id']."'");
 		?>
-				<div class="col-sm-12 col-md-12 col-lg-3" >
-				<form name="form1" method="post" action="<?php echo $aksi; ?>&act=update" >
-					<div class="form-group">
-						<label>Additional Id : </label>
-						<div class="form-group">
-							<input class="form-control" name="additional_id" value="<?php echo $data[0]['additional_id']; ?>" readonly>
+				<div class="col-sm-12 col-md-12 col-lg-12" >				
+					<form name="form1" method="post" action="<?php echo $aksi; ?>&act=update" >
+						<div class="col-sm-12 col-md-3 col-lg-3" >	
+							<div class="form-group">
+								<label>Claim Id : </label>
+								<div class="form-group">
+									<input class="form-control" name="claim_id" value="<?= $data[0]['claim_id'] ?>" readonly>
+								</div>
+							</div>		
+							<div class="form-group">
+								<label>Claim Date : </label>
+								<div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
+									<input class="form-control" name="claim_date" size="10" type="text" value="<?= date('Y-m-d',strtotime($data[0]['claim_date'])) ?>" placeholder="YYYY-MM-DD">
+									<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Claim Number Dist : </label>
+								<div class="form-group">
+									<input class="form-control" name="claim_number_dist" id="claim_number_dist" value="<?= $data[0]['claim_number_dist'] ?>">
+								</div>
+							</div><div class="form-group">
+								<label>Reco Id : </label>
+								<div class="form-group">
+									<input class="form-control" name="reco_id" id="reco_id" value="<?= $data[0]['reco_id'] ?>" required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Distributor Id : </label>
+								<div class="form-group">
+									<select type="text" class="form-control" name="distributor_id" id="distributor_id" value="<?= $data[0]['distributor_id'] ?>"  required>
+									<option value="<?= $data[0]['distributor_id']; ?>" ><?= $data[0]['distributor_id']; ?> - <?= $data[0]['distributor_name']; ?></option>
+									<?php 
+										$vendor = $crud->fetch("distributor","distributor_id,distributor_name","1 order by distributor_id");
+										foreach($vendor as $value){
+											echo "<option value=".$value['distributor_id'].">".$value['distributor_id']." - ".$value['distributor_name']."</option>";
+										}
+									?>
+								</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Distributor Name : </label>
+								<div class="form-group">
+									<input class="form-control" name="distributor_name" id="distributor_name" value="<?= $data[0]['distributor_name'] ?>" readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Reco Outstanding : </label>
+								<div class="form-group">
+									<input class="form-control" name="reco_outstanding" id="reco_outstanding" value="<?= $data[0]['outstanding'] ?>"  readonly>
+								</div>
+							</div>
 						</div>
-					</div>			
-					<div class="form-group">
-						<label>Additional Date : </label>
-						<div class="input-group date form_date" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-							<input class="form-control" name="additional_date" size="10" type="text" placeholder="YYYY-MM-DD" value="<?php echo $data[0]['additional_date'];?>">
-							<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span>
+						<div class="col-sm-12 col-md-3 col-lg-3" >
+							<div class="form-group">
+								<label>Account Id : </label>
+								<div class="form-group">
+									<input class="form-control" name="account_id" id="account_id" placeholder="Account Id" value="<?= $data[0]['account_id'] ?>"  readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Account Name : </label>
+								<div class="form-group">
+									<input class="form-control" name="account_name" id="account_name" placeholder="Account Name" value="<?= $data[0]['account_name'] ?>"  readonly>
+								</div>
+							</div>
+							<div class="form-group" id="account_id">
+								<label>Vendor Id : </label>
+								<select type="text" class="form-control" name="vendor_id" id="vendor_id" value="<?= $data[0]['vendor_id'] ?>"  required>
+									<option value="<?= $data[0]['vendor_id']; ?>" ><?= $data[0]['vendor_id']; ?> - <?= $data[0]['vendor_name']; ?></option>
+									<?php 
+										$vendor = $crud->fetch("vendor","vendor_id,vendor_name","1 order by vendor_id");
+										foreach($vendor as $value){
+											echo "<option value=".$value['vendor_id'].">".$value['vendor_id']." - ".$value['vendor_name']."</option>";
+										}
+									?>
+								</select>
+							</div>
+							<div class="form-group">
+								<label>Vendor Name : </label>
+								<div class="form-group">
+									<input class="form-control" name="vendor_name" id="vendor_name" placeholder="Vendor Name" value="<?= $data[0]['vendor_name'] ?>"  readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>AP Account Type : </label>
+								<div class="form-group">
+									<input class="form-control" name="ap_account_type" id="ap_account_type" placeholder="AP Account Type" value="<?= $data[0]['ap_account_type'] ?>"  readonly>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>AP Account Id : </label>
+								<div class="form-group">
+									<input class="form-control" name="ap_account_id" id="ap_account_id" placeholder="AP Account Id" value="<?= $data[0]['ap_account_id'] ?>" readonly>
+								</div>
+							</div>	
+							<div class="form-group">
+								<label>PO SO Number : </label>
+								<div class="form-group">
+									<input class="form-control" name="po_so_number" id="po_so_number" value="<?= $data[0]['po_so_number'] ?>" >
+								</div>
+							</div>
 						</div>
-					</div>
-					<div class="form-group">
-						<label>Budget ID : </label>
-						<select type="text" class="form-control" name="budget_id" id="budget_id">
-							<option><?php echo $data[0]['budget_id'];?></option>
-							<?php 
-								$budget = $crud->fetch("budget","","departemen_id ='".$_SESSION['departemen_id']."' 
-													 and approval1<>'' and posting=0 order by budget_id");
-								foreach($budget as $value){
-									echo "<option value=".$value['budget_id'].">".$value['budget_id']."</option>";
-								}
-							?>
-						</select>
-					</div>
-					<div class="form-group" id="account_id">
-						<label>Account Id : </label>
-						<select type="text" class="form-control" name="account_id">
-							<option value="<?php echo $data[0]['account_id'];?>"><?php echo $data[0]['account_id']." - ".$data[0]['account_name']; ?></option>
-							<?php 
-								$account = $crud->fetch("v_detail_budget","account_id,account_name","budget_id='".$_SESSION['budget_id']."' order by budget_id");
-								foreach($account as $value){
-									echo "<option value=".$value['account_id'].">".$value['account_id']." - ".$value['account_name']."</option>";
-								}
-							?>
-						</select>
-					</div>	
-					<div class="form-group">
-						<label>Description : </label>
-						<div class="form-group">
-							<textarea class="form-control" name="description" required><?php echo $data[0]['description']; ?></textarea>
-						</div>
-					</div>						
-					<div class="form-group">
-						<label>Total : </label>
-						<div class="form-group">
-							<input class="form-control" name="total" value="<?php echo number_format($data[0]['total'],0,'.',','); ?>" required> 
-						</div>
-					</div>	
-								
-					<button type="submit" name="submit" class="btn btn-primary" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save</button>
-					<button type="button" class="btn btn-danger " onclick="window.history.go(-1)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</button>
-				</form>
-			</div>
-		<?php
-	break;
-
-/*   jika pilihan kondisinya adalah view */ 
-	case "view":			
-		$data = $crud->fetch("v_claim_reco","","claim_id='$_GET[id]'");			
-		?>
-			<div class="row">
-				<div class="col-sm-12 col-md-12 col-lg-12">
-					<div class="col-sm-12 col-md-12 col-lg-12">
-						<a href="?r=claimreco&mod=<?php echo $_GET[mod]; ?>&id=<?php echo $data[0][budget_id]; ?>" class="btn btn-primary" ><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</a>
-						<a href="<?= $aksi; ?>&act=approve&id=<?= $data[0][claim_id]; ?>" onclick="return confirm('Are you sure want approve claim id : <?= $data[0]['claim_id']; ?> ? ')" class="btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true" ></span> Approve</a> 									
-						<a href="<?= $aksi; ?>&act=reject&id=<?= $data[0][claim_id]; ?>" onclick="return confirm('Are you sure want reject claim id : <?= $data[0]['claim_id']; ?> ? ')" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> Reject</a> 									
-						<br><br>
-					</div>
+						<div class="col-sm-12 col-md-3 col-lg-3" >
+							<div class="form-group">
+								<label>PPN : </label>
+								<div class="form-group">
+									<input class="form-control" name="ppn" id="ppn" value="<?= $data[0]['ppn'] ?>" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label>No Faktur Pajak : </label>
+								<div class="form-group">
+									<input class="form-control" name="nomor_faktur_pajak" value="<?= $data[0]['nomor_faktur_pajak'] ?>" >
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Description : </label>
+								<div class="form-group">
+									<textarea class="form-control" name="description" id="description" rows="5" required><?= $data[0]['deskripsi'] ?></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Claim Approved Ammount : </label>
+								<div class="form-group">
+									<input class="form-control" name="claim_approved_ammount" id="claim_approved_ammount" value="<?= $data[0]['claim_approved_ammount'] ?>"  required>
+								</div>
+							</div>
+							<div class="form-group">
+								<label>Claim Approved Ammount + ppn : </label>
+								<div class="form-group">
+									<input class="form-control" name="total_claim_approved_ammount" id="total_claim_approved_ammount" value="<?= $data[0]['total_claim_approved_ammount'] ?>"  readonly>
+								</div>
+							</div>						
+							<button type="submit" name="submit" class="btn btn-primary" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Save</button>
+							<button type="button" class="btn btn-danger " onclick="window.history.go(-1)"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancel</button>
+						</div>						
+					</form>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12 col-md-12 col-lg-12">
-					<div class="col-sm-12 col-md-4 col-lg-4">						
-						<table class="table table-stripped table-hover">
-							<tr>
-								<td><strong>Claim Id </strong></td><td><?php echo $data[0]['claim_id']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Claim Date : </strong></td><td><?php echo $crud->cetak_tanggal($data[0]['claim_date']); ?></td>
-							</tr>
-							<tr>
-								<td><strong>Claim Number Dist : </strong></td><td><?php echo $data[0]['claim_number_dist']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Budget Id : </strong></td><td><?php echo $data[0]['budget_id']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Reco Id : </strong></td><td><?php echo $data[0]['reco_id']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Account Id : </strong></td><td><?php echo $data[0]['account_id']." / ".$data[0]['account_name']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Distributor : </strong></td><td><?php echo $data[0]['distributor_id']." / ".$data[0]['distributor_name']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Description : </strong></td><td><?php echo $data[0]['description']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Total Reco: </strong></td><td><?php echo number_format($data[0]['total_reco'],0,'.',','); ?></td>
-							</tr>
-							<tr>
-								<td><strong>Total Allow Used Reco: </strong></td><td><?php echo number_format($data[0]['total_allow_used_reco'],0,'.',','); ?></td>
-							</tr>
-							<tr>
-								<td><strong>Total Claim: </strong></td><td><?php echo number_format($data[0]['total_claim'],0,'.',','); ?></td>
-							</tr>
-							<tr>
-								<td><strong>Outstanding: </strong></td><td><?php echo number_format($data[0]['outstanding'],0,'.',','); ?></td>
-							</tr>
-						</table>
-					</div>
-					<div class="col-sm-12 col-md-4 col-lg-4">	
-						<table class="table table-stripped table-hover">					
-							<tr>
-								<td><strong>PO SO Number : </strong></td><td><?php echo $data[0]['po_so_number']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>PPN : </strong></td><td><?= $data[0]['ppn']; ?> %</td>
-							</tr>
-							<tr>
-								<td><strong>PPH : </strong></td><td><?php echo $data[0]['pph']; ?></td>
-							</tr>	
-							<tr>
-								<td><strong>Nomor Faktur Pajak : </strong></td><td><?php echo $data[0]['nomor_faktur_pajak']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Deskripsi : </strong></td><td><?php echo $data[0]['deskripsi']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Claim Approved Ammount : </strong></td><td><?= number_format($data[0]['claim_approved_ammount'],0,'.',','); ?></td>
-							</tr>
-							<tr>
-								<td><strong>Total Claim Approved Ammount : </strong></td><td><?= number_format($data[0]['total_claim_approved_ammount'],0,'.',','); ?></td>
-							</tr>
-							<tr>
-								<td><strong>Vendor Id : </strong></td><td><?php echo $data[0]['vendor_id']." / ".$data[0]['vendor_name']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>AP Account Type : </strong></td><td><?php echo $data[0]['ap_account_type']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>AP Account ID : </strong></td><td><?php echo $data[0]['ap_account_id']; ?></td>
-							</tr>
-							<?php 
-								if(strtoupper($data[0]['status']) == "PENDING"){
-									$class = "label label-warning";
-								}elseif(strtoupper($data[0]['status']) == "APPROVED"){
-									$class = "label label-success";
-								}else{
-									$class = "label label-danger";
-								}							
-							?>
-							<tr>
-								<td><strong>Status : </strong></td><td><span class='<?=$class?>'><?= strtoupper($data[0]['status']) ?></span></td>
-							</tr>
-						</table>
-					</div>
-					<div class="col-sm-12 col-md-4 col-lg-4">	
-						<table class="table table-stripped table-hover">	
-							<tr>
-								<td><strong>Journal Id : </strong></td><td><?php echo $data[0]['journal_id']; ?></td>
-							</tr>
-							<tr>
-								<td><strong>Approve By : </strong></td><td><?php echo $data[0]['approve_by']." / ".$crud->cetak_tanggal($data[0]['approve_date']); ?></td>
-							</tr>							
-							<tr>
-								<td><strong>Created By : </strong></td><td><?php echo $data[0]['created_by']." / ".$crud->cetak_tanggal($data[0]['created_date']); ?></td>
-							</tr>
-							<tr>
-								<td><strong>Update By : </strong></td><td><?php echo $data[0]['update_by']." / ".$crud->cetak_tanggal($data[0]['update_date']); ?></td>
-							</tr>
-						</table>
-					</div>
-				</div>
-			</div>
 		<?php
 	break;
 	

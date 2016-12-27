@@ -96,13 +96,21 @@
 		header("location:../../user.php?r=$module&mod=".$mod);
 	}
 	
-	if($module == "additionalbudget" and $act == "update"){
-		$additional_id = $_POST['additional_id'];
-		$budget_id = $_POST['budget_id'];
-		$additional_date = $_POST['additional_date'];
+	if($module == "claimreco" and $act == "update"){
+		$claim_id = $_POST['claim_id'];
+		$claim_date = $_POST['claim_date'];
+		$claim_number_dist = $_POST['claim_number_dist'];
+		$distributor_id = $_POST['distributor_id'];
+		$reco_id = $_POST['reco_id'];
+		$po_so_number = $_POST['po_so_number'];
+		$ppn = $_POST['ppn'];
+		$pph = $_POST['pph'];
+		$nomor_faktur_pajak = $_POST['nomor_faktur_pajak'];
+		$deskripsi = $_POST['description'];
+		$claim_approved_ammount = str_replace(",","",$_POST['claim_approved_ammount']);
 		$account_id = $_POST['account_id'];
-		$description = $_POST['description'];
-		$total = str_replace(",","",$_POST['total']);
+		$vendor_id = $_POST['vendor_id'];
+		$status = $_POST['status'];
 		
 		$data = $crud->fetch("v_user_data","distinct departemen_id,group_id,module_id,c,r,u,d",
 		                     "departemen_id='$_SESSION[departemen_id]' and group_id = '$_SESSION[group_id]' 
@@ -110,20 +118,28 @@
 		if($data[0]['u'] == 1){	
 			try{
 				//cek status budget apakah sudah posting
-				$cek = $crud->fetch("budget","posting","budget_id='".$budget_id."'");
-				if($cek[0]['posting'] == 0){
-					$data = array("additional_date" => $additional_date,
-								  "budget_id" => $budget_id,
+				$cek = $crud->fetch("v_reco_budget","outstanding","reco_id='".$reco_id."'");
+				if(($cek[0]['outstanding']+$claim_approved_ammount) >= $claim_approved_ammount){	
+					$data = array("claim_date" => $claim_date,
+								  "claim_number_dist" => $claim_number_dist,
+								  "distributor_id" => $distributor_id,
+								  "reco_id" => $reco_id,
+								  "po_so_number" => $po_so_number,
+								  "ppn" => $ppn,
+								  "pph" => $pph,
+								  "nomor_faktur_pajak" => $nomor_faktur_pajak,
+								  "deskripsi" => $deskripsi,
+								  "claim_approved_ammount" => $claim_approved_ammount,
 								  "account_id" => $account_id,
-								  "description" => $description,
-								  "total" => $total,
+								  "vendor_id" => $vendor_id,
+								  "status" => "pending",								  
 								  "update_by" => $_SESSION['username'],
 								  "update_date" => date('Y-m-d H:m:s'));
 					
-					$crud->update("additional_budget",$data,"budget_id='".$budget_id."' and additional_id='".$additional_id."'");
-					$_SESSION['message'] = $crud->message_success("Additional Id : ".$additional_id." has been updated successfully!!");				
+					$crud->update("claim_reco",$data,"claim_id='".$claim_id."'");
+					$_SESSION['message'] = $crud->message_success("Claim Id : ".$claim_id." has been updated successfully!!");						
 				}else{
-					$_SESSION['message'] = $crud->message_error("Additional Id : ".$additional_id." can't update, because budget Id : ".$budget_id." has been closed!");
+					$_SESSION['message'] = $crud->message_error("Claim Id : ".$claim_id." can't insert, because reco Id : ".$reco_id." is not enough!");
 				}
 			}catch(exception $e){
 				$_SESSION['message'] = $crud->message_error($e->getmessage());
