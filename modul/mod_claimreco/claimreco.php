@@ -174,8 +174,8 @@ switch($_GET['act']){
 									<td align=\"right\">".number_format($value[claim_approved_ammount],0,'.',',')."</td>
 									<td><span class='$class'>".strtoupper($value['status'])."</span></td>
 									<td>
-										<a href=\"$aksi&act=approve&id=$value[budget_id]&clid=$value[claim_id]\" onclick=\"return confirm('Are you sure want to approve ? ')\"><span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\" ></span> Approve</a> |									
-										<a href=\"$aksi&act=reject&id=$value[budget_id]&clid=$value[claim_id]\" onclick=\"return confirm('Are you sure want to reject ? ')\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\" ></span> Reject</a> |									
+										<a href=\"$aksi&act=approve&id=$value[budget_id]&clid=$value[claim_id]\" onclick=\"return confirm('Are you sure want to approve claim id  $value[claim_id] ? ')\"><span class=\"glyphicon glyphicon-ok\" aria-hidden=\"true\" ></span> Approve</a> |									
+										<a href=\"$aksi&act=reject&id=$value[budget_id]&clid=$value[claim_id]\" onclick=\"return confirm('Are you sure want to reject claim id  $value[claim_id] ? ')\"><span class=\"glyphicon glyphicon-remove\" aria-hidden=\"true\" ></span> Reject</a> |									
 										<a href=\"?r=claimreco&mod=".$_GET['mod']."&act=view&id=$value[claim_id]\"><span class=\"glyphicon glyphicon-search\" aria-hidden=\"true\"></span> Detail</a> |
 										<a href=\"?r=claimreco&mod=".$_GET['mod']."&act=edit&id=$value[claim_id]\"><span class=\"glyphicon glyphicon-pencil\" aria-hidden=\"true\"></span> Edit</a> |
 										<a href=\"$aksi&act=del&id=$value[claim_id]\" onclick=\"return confirm('This record will be deleted, Are you sure ? ')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\" ></span> Del</a> 									
@@ -478,6 +478,125 @@ switch($_GET['act']){
 						</div>						
 					</form>
 				</div>
+		<?php
+	break;
+	
+	/*   jika pilihan kondisinya adalah view */ 
+	case "view":			
+		$data = $crud->fetch("v_claim_reco","","claim_id='$_GET[id]'");			
+		?>
+			<div class="row">
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<div class="col-sm-12 col-md-12 col-lg-12">
+						<a href="?r=claimreco&mod=<?php echo $_GET[mod]; ?>" class="btn btn-primary" ><span class="glyphicon glyphicon-backward" aria-hidden="true"></span> Back</a>
+						<a href="<?= $aksi; ?>&act=approve&clid=<?= $data[0][claim_id]; ?>" onclick="return confirm('Are you sure want approve claim id : <?= $data[0]['claim_id']; ?> ? ')" class="btn btn-success"><span class="glyphicon glyphicon-ok" aria-hidden="true" ></span> Approve</a> 									
+						<a href="<?= $aksi; ?>&act=reject&clid=<?= $data[0][claim_id]; ?>" onclick="return confirm('Are you sure want reject claim id : <?= $data[0]['claim_id']; ?> ? ')" class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true" ></span> Reject</a> 									
+						<br><br>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 col-md-12 col-lg-12">
+					<div class="col-sm-12 col-md-4 col-lg-4">						
+						<table class="table table-stripped table-hover">
+							<tr>
+								<td><strong>Claim Number System </strong></td><td><?php echo $data[0]['claim_number_system']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Claim Date : </strong></td><td><?php echo $crud->cetak_tanggal($data[0]['claim_date']); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Claim Number Dist : </strong></td><td><?php echo $data[0]['claim_number_dist']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Kode Promo : </strong></td>
+								<td>
+									<?php 
+										$reco = $crud->fetch("v_claim_promo","","claim_number_system='".$_GET['id']."'");
+										foreach($reco as $row){
+											if($row['cek'] == 0){ $class = "label label-danger"; }else{ $class = "label label-success";}
+											echo $row['kode_promo']." = ".
+												 number_format($row['costofpromo'],0,'.',',')." ".
+												 "<span class=$class>".$row['status']."</span>"; 
+										}
+									?>
+								</td>
+							</tr>
+							<tr>
+								<td><strong>COA : </strong></td><td><?php echo $data[0]['coa']." / ".$data[0]['coa_name']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Distributor : </strong></td><td><?php echo $data[0]['distributor_id']." / ".$data[0]['distributor_name']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Cost of Promo: </strong></td><td><?php echo number_format($data[0]['costofpromo'],0,'.',','); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Cost of Promo Left: </strong></td><td><?php echo number_format($data[0]['costofpromoleft'],0,'.',','); ?></td>
+							</tr>					
+							<tr>
+								<td><strong>PO SO Number : </strong></td><td><?php echo $data[0]['po_so_number']; ?></td>
+							</tr>
+						</table>
+					</div>
+					<div class="col-sm-12 col-md-4 col-lg-4">	
+						<table class="table table-stripped table-hover">
+							<tr>
+								<td><strong>PPN : </strong></td><td><?= number_format($data[0]['ppn'],2,',','.'); ?> %</td>
+							</tr>
+							<tr>
+								<td><strong>PPH : </strong></td><td><?php echo $data[0]['pph']; ?></td>
+							</tr>	
+							<tr>
+								<td><strong>Nomor Faktur Pajak : </strong></td><td><?php echo $data[0]['nomor_faktur_pajak']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Deskripsi : </strong></td><td><?php echo $data[0]['deskripsi']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Claim Approved Ammount : </strong></td><td><?= number_format($data[0]['claim_approved_ammount'],0,'.',','); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Total Claim Approved Ammount : </strong></td><td><?= number_format($data[0]['total_claim_approved_ammount'],0,'.',','); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Vendor Id : </strong></td><td><?php echo $data[0]['vendor_id']." / ".$data[0]['vendor_name']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>AP Account Type : </strong></td><td><?php echo $data[0]['ap_account_type']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>AP Account ID : </strong></td><td><?php echo $data[0]['ap_account_id']; ?></td>
+							</tr>
+						</table>
+					</div>
+					<div class="col-sm-12 col-md-4 col-lg-4">	
+						<table class="table table-stripped table-hover">	
+							<?php 
+								if(strtoupper($data[0]['status']) == "PENDING"){
+									$class = "label label-warning";
+								}elseif(strtoupper($data[0]['status']) == "APPROVED"){
+									$class = "label label-success";
+								}else{
+									$class = "label label-danger";
+								}							
+							?>
+							<tr>
+								<td><strong>Status : </strong></td><td><span class='<?=$class?>'><?= strtoupper($data[0]['status']) ?></span></td>
+							</tr>
+							<tr>
+								<td><strong>Journal Id : </strong></td><td><?php echo $data[0]['journal_id']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Approve By : </strong></td><td><?php echo $data[0]['approve_by']." / ".$crud->cetak_tanggal($data[0]['approve_date']); ?></td>
+							</tr>							
+							<tr>
+								<td><strong>Created By : </strong></td><td><?php echo $data[0]['created_by']." / ".$crud->cetak_tanggal($data[0]['created_date']); ?></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
 		<?php
 	break;
 	

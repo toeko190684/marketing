@@ -1,7 +1,8 @@
 <?php 
 	error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 	session_start();
-	include "../../config/koneksi.php";
+	require_once "../../config/koneksi.php";
+	require_once "../../config/sqlsvr_connect.php";
 	
 	$module = $_GET['r'];
 	$act = $_GET['act'];
@@ -117,7 +118,7 @@
 							 and module_id='".$mod."'");
 		if($data[0]['u'] == 1){	
 			try{
-				//cek status budget apakah sudah posting
+				//cek status reko apakah sudah posting
 				$cek = $crud->fetch("v_reco_budget","outstanding","reco_id='".$reco_id."'");
 				if(($cek[0]['outstanding']+$claim_approved_ammount) >= $claim_approved_ammount){	
 					$data = array("claim_date" => $claim_date,
@@ -151,12 +152,116 @@
 	}
 	
 	if($module == "claimreco" and $act == "approve"){
-		$_SESSION['message'] = $crud->message_success("Demo version only : </br>Claim Id : ".$_GET['clid']." has been approved successfully!!");
-		header("location:../../user.php?r=$module&mod=".$mod);	
+		$claim_id = $_GET['clid'];
+		$data = $crud->fetch("v_user_data","distinct departemen_id,group_id,module_id,c,r,u,d",
+		                     "departemen_id='$_SESSION[departemen_id]' and group_id = '$_SESSION[group_id]' 
+							 and module_id='".$mod."'");
+		if($data[0]['u'] == 1){	
+			try{
+				$cek = $crud->fetch("v_claim_reco","claim_id,claim_date,reco_id,status,approve_by,approve_date,vendor_id,
+									nomor_faktur_pajak,ppn,ap_account_type,ap_account_id",
+									"claim_id='".$claim_id."'");
+				if(strtoupper($cek[0]['status']) == "PENDING"){
+					$data = array("status" => "approved", "approve_by" => $_SESSION['username'], "approve_date" => date('Y-m-d'));
+					$step1 = $crud->update("claim_reco",$data,"claim_id = '".$claim_id."'");
+					
+					if($step1){
+						/*==========================================================
+							buat nomor journal id berdasarkan tanggal claim date
+						==========================================================*/
+						
+						$no =  $crud_sql->fetch("ap_journal","max(journal_id) as journal_id",
+												"journal_date='".date('Y-m-d',strtotime($cek[0]['claim_date']))."'");
+						
+						
+						if($no[0]['journal_id'] == ""){
+							$journal_id = date(Ymd,strtotime($cek[0]['claim_date']))."0001";
+						}else{
+							$journal_id = $no[0]['journal_id']+1;
+						}
+						
+						//cari data account type di sql server nyebelin 
+						$account = $crud_sql->fetch("account","account_id,acccount_type","account_id='".$cek[0]['account_id']."'");
+						
+						//cari term of pay dari vendor nyebelin
+						$term_of_pay = $crud_sql->fetch("vendor","term_of_pay","vendor_id='".$cek[0]['vendor_id']."'");
+						
+						//prepare data untuk insert ke tabel ap_jurnal database sql server
+						$data = array("user_id" => $_SESSION['username'],
+										"last_update" => $cek[0]['claim_date'],
+										"created_by" => $_SESSION['username'],   
+										"company" => "PT MORINAGA KINO INDONESIA",
+										"branch" => "JAKARTA",
+										"journal_id" => $journal_id,
+										"journal_date" => $cek[0]['claim_date'],
+										"description" => $cek[0]['claim_id']."-".$cek[0]['reco_id'] ,
+										"vendor_id" => $cek[0]['vendor_id'],
+										"po_id" => $cek[0]['claim_id'],
+										"po_rev" => "",
+										"debet" => 0,
+										"credit" => $cek[0]['claim_approved_ammount'],
+										"due_date" => $cek[0]['claim_date'],
+										"paid" => 0,
+										"paid_date" => dateadd(day,$rterm_of_pay['term_of_pay'],$cek[0]['claim_date']) ,
+										"posted" => 0,
+										"ok" => 0,
+										"account_type" => "" ,
+										"account_id" => "",
+										"check_no" => "",
+										"check_date" => $cek[0]['claim_date'],
+										"c_symbol" => "IDR",
+										"ppn_no" => $cek[0]['nomor_faktur_pajak'],
+										"ppn" => $cek[0]['ppn'],
+										"vat_date" => $cek[0]['claim_date'],
+										"vinvoice_id" => "",
+										"vinvoice_date" => $cek[0]['claim_date'],
+										"ap_account_type" => $cek[0]['ap_account_type'],
+										"ap_account_id" => $cek[0]['ap_account_id'],
+										"as_account_type" => $account[0]['account_id'],
+										"as_account_id" => $account[0]['account_type'],
+										"vat_account_type" => "" ,
+										"vat_account_id" => "",
+										"transaction_id" => "",
+										"rec_id"=> $cek[0]['reco_id']);
+						print_r($data);
+					}
+					
+					$_SESSION['message'] = $crud->message_success("Claim Id : ".$claim_id." has been approved successfully!!");				
+				}else{
+					$_SESSION['message'] = $crud->message_error("Claim Id : ".$claim_id." can't approved, because claim Id : ".$claim_id." has been ".$cek[0]['status']." by ".$cek[0]['approve_by']." !");
+				}
+			}catch(exception $e){
+				$_SESSION['message'] = $crud->message_error($e->getmessage());
+			}
+		}else{
+			$_SESSION['message'] = $crud->module_alert();	
+		}
+		//header("location:../../user.php?r=$module&mod=".$mod);		
 	}
 	
 	if($module == "claimreco" and $act == "reject"){
-		$_SESSION['message'] = $crud->message_success("Demo version only : </br>Claim Id : ".$_GET['clid']." has been rejected successfully!!");
+		$claim_id = $_GET['clid'];
+		$data = $crud->fetch("v_user_data","distinct departemen_id,group_id,module_id,c,r,u,d",
+		                     "departemen_id='$_SESSION[departemen_id]' and group_id = '$_SESSION[group_id]' 
+							 and module_id='".$mod."'");
+		if($data[0]['u'] == 1){	
+			try{
+				$cek = $crud->fetch("claim_reco","status,approve_by,approve_date","claim_id='".$claim_id."'");
+				if(strtoupper($cek[0]['status']) == "PENDING"){
+					$data = array("status" => "rejected", "approve_by" => $_SESSION['username'], "approve_date" => date('Y-m-d'));
+					$crud->update("claim_reco",$data,"claim_id = '".$claim_id."'");
+					$_SESSION['message'] = $crud->message_success("Claim Id : ".$claim_id." has been rejected successfully!!");				
+				}else{
+					$_SESSION['message'] = $crud->message_error("Claim Id : ".$claim_id." can't reject, because claim Id : ".$claim_id." has been ".$cek[0]['status']." by ".$cek[0]['approve_by']." !");
+				}
+			}catch(exception $e){
+				$_SESSION['message'] = $crud->message_error($e->getmessage());
+			}
+		}else{
+			$_SESSION['message'] = $crud->module_alert();	
+		}
+		header("location:../../user.php?r=$module&mod=".$mod);			
+				
 		header("location:../../user.php?r=$module&mod=".$mod);	
 	}
 
