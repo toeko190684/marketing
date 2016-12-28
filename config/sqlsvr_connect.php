@@ -50,6 +50,7 @@
 			$sql .= "(".substr($row,1).")";
 			$sql .= " values(".substr($value,1).")";
 			
+			
 			$query = odbc_prepare($this->connection,$sql) or die($this->connection->error);
 			$query = odbc_exec($this->connection,$sql) or die($this->connection->error);
 		}

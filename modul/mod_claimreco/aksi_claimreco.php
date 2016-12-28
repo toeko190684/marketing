@@ -159,74 +159,95 @@
 		if($data[0]['u'] == 1){	
 			try{
 				$cek = $crud->fetch("v_claim_reco","claim_id,claim_date,reco_id,status,approve_by,approve_date,vendor_id,
-									nomor_faktur_pajak,ppn,ap_account_type,ap_account_id",
+									nomor_faktur_pajak,ppn,ap_account_type,ap_account_id,claim_approved_ammount",
 									"claim_id='".$claim_id."'");
+				
 				if(strtoupper($cek[0]['status']) == "PENDING"){
 					$data = array("status" => "approved", "approve_by" => $_SESSION['username'], "approve_date" => date('Y-m-d'));
+					
 					$step1 = $crud->update("claim_reco",$data,"claim_id = '".$claim_id."'");
 					
-					if($step1){
-						/*==========================================================
-							buat nomor journal id berdasarkan tanggal claim date
-						==========================================================*/
-						
-						$no =  $crud_sql->fetch("ap_journal","max(journal_id) as journal_id",
-												"journal_date='".date('Y-m-d',strtotime($cek[0]['claim_date']))."'");
-						
-						
-						if($no[0]['journal_id'] == ""){
-							$journal_id = date(Ymd,strtotime($cek[0]['claim_date']))."0001";
-						}else{
-							$journal_id = $no[0]['journal_id']+1;
-						}
-						
-						//cari data account type di sql server nyebelin 
-						$account = $crud_sql->fetch("account","account_id,acccount_type","account_id='".$cek[0]['account_id']."'");
-						
-						//cari term of pay dari vendor nyebelin
-						$term_of_pay = $crud_sql->fetch("vendor","term_of_pay","vendor_id='".$cek[0]['vendor_id']."'");
-						
-						//prepare data untuk insert ke tabel ap_jurnal database sql server
-						$data = array("user_id" => $_SESSION['username'],
-										"last_update" => $cek[0]['claim_date'],
-										"created_by" => $_SESSION['username'],   
-										"company" => "PT MORINAGA KINO INDONESIA",
-										"branch" => "JAKARTA",
-										"journal_id" => $journal_id,
-										"journal_date" => $cek[0]['claim_date'],
-										"description" => $cek[0]['claim_id']."-".$cek[0]['reco_id'] ,
-										"vendor_id" => $cek[0]['vendor_id'],
-										"po_id" => $cek[0]['claim_id'],
-										"po_rev" => "",
-										"debet" => 0,
-										"credit" => $cek[0]['claim_approved_ammount'],
-										"due_date" => $cek[0]['claim_date'],
-										"paid" => 0,
-										"paid_date" => dateadd(day,$rterm_of_pay['term_of_pay'],$cek[0]['claim_date']) ,
-										"posted" => 0,
-										"ok" => 0,
-										"account_type" => "" ,
-										"account_id" => "",
-										"check_no" => "",
-										"check_date" => $cek[0]['claim_date'],
-										"c_symbol" => "IDR",
-										"ppn_no" => $cek[0]['nomor_faktur_pajak'],
-										"ppn" => $cek[0]['ppn'],
-										"vat_date" => $cek[0]['claim_date'],
-										"vinvoice_id" => "",
-										"vinvoice_date" => $cek[0]['claim_date'],
-										"ap_account_type" => $cek[0]['ap_account_type'],
-										"ap_account_id" => $cek[0]['ap_account_id'],
-										"as_account_type" => $account[0]['account_id'],
-										"as_account_id" => $account[0]['account_type'],
-										"vat_account_type" => "" ,
-										"vat_account_id" => "",
-										"transaction_id" => "",
-										"rec_id"=> $cek[0]['reco_id']);
-						print_r($data);
+					$pesan = "Claim Id : ".$claim_id." has been approved successfully!!";	
+					
+					
+					/*==========================================================
+						buat nomor journal id berdasarkan tanggal claim date
+					==========================================================*/
+											
+					$no =  $crud_sql->fetch("ap_journal","max(journal_id) as journal_id",
+											"journal_date='".date('Y-m-d',strtotime($cek[0]['claim_date']))."'");
+					
+					
+					if($no[0]['journal_id'] == ""){
+						$journal_id = date(Ymd,strtotime($cek[0]['claim_date']))."0001";
+					}else{
+						$journal_id = $no[0]['journal_id']+1;
 					}
 					
-					$_SESSION['message'] = $crud->message_success("Claim Id : ".$claim_id." has been approved successfully!!");				
+					
+					//cari data account type di sql server nyebelin 
+					$account = $crud_sql->fetch("account","account_id,account_type","account_id='".$cek[0]['account_id']."'");
+					
+					
+					
+					//cari term of pay dari vendor nyebelin
+					$term_of_pay = $crud_sql->fetch("vendor","term_of_pay","vendor_id='".$cek[0]['vendor_id']."'");
+					
+					//cari paid date didapat dari penambahan tanggal claim date sebanyak term_of_pay vendor_id 
+					$paid_date =  date('Y-m-d',strtotime("+".floor($term_of_pay[0][term_of_pay])." days",strtotime($cek[0]['claim_date'])));
+					
+					//cari untuk mengisi po_id dan rec_id, digit hanya 15 digit disediakan di sql server sehinggal pemisah kodenya ("/" dan "-")dipisahkan
+					$separator = array("/","-");
+					$po_rec_id = str_replace($separator,"",$cek[0]['claim_id']);
+					
+					
+					//prepare data untuk insert ke tabel ap_jurnal database sql server
+					$data = array("user_id" => $_SESSION['username'],
+									"last_update" => $cek[0]['claim_date'],
+									"created_by" => $_SESSION['username'],   
+									"company" => "PT MORINAGA KINO INDONESIA",
+									"branch" => "JAKARTA",
+									"journal_id" => $journal_id,
+									"journal_date" => $cek[0]['claim_date'],
+									"description" => $cek[0]['claim_id']."-".$cek[0]['reco_id'] ,
+									"vendor_id" => $cek[0]['vendor_id'],
+									"po_id" => $po_rec_id,
+									"po_rev" => "",
+									"debet" => 0,
+									"credit" => $cek[0]['claim_approved_ammount'],
+									"due_date" => $cek[0]['claim_date'],
+									"paid" => 0,
+									"paid_date" => $paid_date ,
+									"posted" => 0,
+									"ok" => 0,
+									"account_type" => "" ,
+									"account_id" => "",
+									"check_no" => "",
+									"check_date" => $cek[0]['claim_date'],
+									"c_symbol" => "IDR",
+									"ppn_no" => $cek[0]['nomor_faktur_pajak'],
+									"ppn" => $cek[0]['ppn'],
+									"vat_date" => $cek[0]['claim_date'],
+									"vinvoice_id" => "",
+									"vinvoice_date" => $cek[0]['claim_date'],
+									"ap_account_type" => $cek[0]['ap_account_type'],
+									"ap_account_id" => $cek[0]['ap_account_id'],
+									"as_account_type" => $account[0]['account_id'],
+									"as_account_id" => $account[0]['account_type'],
+									"vat_account_type" => "" ,
+									"vat_account_id" => "",
+									"transaction_id" => "",
+									"rec_id"=> $po_rec_id);
+					
+					//input data ke kinosentraacc
+					$ap_journal = $crud_sql->insert("ap_journal",$data);
+					
+					//update field journal_id di tabel claim_reco
+					$data = array("journal_id" => $journal_id);
+					$crud->update("claim_reco",$data,"claim_id='".$cek[0]['claim_id']."'");
+						
+					$pesan = $pesan."<br>Journal Id : ".$journal_id." has been insert successfully!!";	
+					$_SESSION['message'] = $crud->message_success($pesan);
 				}else{
 					$_SESSION['message'] = $crud->message_error("Claim Id : ".$claim_id." can't approved, because claim Id : ".$claim_id." has been ".$cek[0]['status']." by ".$cek[0]['approve_by']." !");
 				}
@@ -236,7 +257,7 @@
 		}else{
 			$_SESSION['message'] = $crud->module_alert();	
 		}
-		//header("location:../../user.php?r=$module&mod=".$mod);		
+		header("location:../../user.php?r=$module&mod=".$mod);		
 	}
 	
 	if($module == "claimreco" and $act == "reject"){
