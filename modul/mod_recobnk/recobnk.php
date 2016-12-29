@@ -59,21 +59,15 @@ switch($_GET['act']){
 				</thead>
 				<tbody>
 					<?php						
-						//ini adalah halaman paging
+						require_once "pagelink_top.php";
 						
-						$per_hal = 10;
 						$jumlah_record = $crud->fetch("reco_bnk","","year(tgl_promo)='".$_SESSION['year']."'");
 						
-						$jum = count($jumlah_record);
-						$halaman = ceil($jum/$per_hal);
-						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
-						$start = ($page - 1) * $per_hal;
-						
 						$data = $crud->fetch("reco_bnk","","year(tgl_promo)='".$_SESSION['year']."'
-											 limit $start,$per_hal");			
+											 limit $posisi,$batas");			
 						
 						
-						$no = 1;
+						$no = 1 + $posisi;
 						foreach($data as $value){							
 							if(strtoupper($value['status'])== "APPROVED"){ $class = "label label-success"; }else{ $class = "label label-danger";}
 							echo "<tr>
@@ -94,7 +88,7 @@ switch($_GET['act']){
 				</table>
 				
 				<?php 
-					include "footer_pagination.php";
+					require_once "pagelink_bottom.php";
 				?>
 				
 			</div>

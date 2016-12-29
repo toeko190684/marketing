@@ -46,29 +46,22 @@ switch($_GET['act']){
 				</thead>
 				<tbody>
 					<?php						
-						//ini adalah halaman paging
+						require_once "pagelink_top.php";
 						
 						$per_hal = 10;
 						if(trim($_POST['claim_number_system']) == ""){
 							$jumlah_record = $crud->fetch("v_claim_bnk_header","","year(claim_date) = '".$_SESSION['year']."'");
 						}else{
 							$jumlah_record = $crud->fetch("v_claim_bnk_header","","year(claim_date) = '".$_SESSION['year']."' and claim_number_system='".$_POST['claim_number_system']."'");
-						}
+						}						
 						
-						$jum = count($jumlah_record);
-						$halaman = ceil($jum/$per_hal);
-						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
-						$start = ($page - 1) * $per_hal;
-						$no = $start +1;
+						$no = 1 + $posisi;
 						
 						if(trim($_POST['claim_number_system']) == ""){							
-							$data = $crud->fetch("v_claim_bnk_header","","year(claim_date) = '".$_SESSION['year']."' limit $start,$per_hal");
+							$data = $crud->fetch("v_claim_bnk_header","","year(claim_date) = '".$_SESSION['year']."' limit $posisi,$batas");
 						}else{
 							$data = $crud->fetch("v_claim_bnk_header","","year(claim_date) = '".$_SESSION['year']."' and claim_number_system='".$_POST['claim_number_system']."'");	
-						}
-						
-						
-						
+						}						
 						
 						foreach($data as $value){							
 							if(strtoupper($value['status']) == "PENDING"){
@@ -99,7 +92,7 @@ switch($_GET['act']){
 				</table>
 				
 				<?php 
-					include "footer_pagination.php";
+					include "pagelink_bottom.php";
 				?>
 				
 			</div>

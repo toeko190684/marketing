@@ -8,6 +8,7 @@ session_start();
 
 require_once("config/koneksi.php");
 require_once("config/sqlsvr_connect.php");
+require_once("config/paging.php");
 
 if($_POST['departemen_id'] <> ""){
 	$data = $crud->fetch("departemen","","departemen_id='".$_POST['departemen_id']."'");

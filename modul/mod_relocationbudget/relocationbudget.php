@@ -130,9 +130,8 @@ switch($_GET['act']){
 				</thead>
 				<tbody>
 					<?php						
-						//ini adalah halaman paging
+						require_once "pagelink_top.php";
 						
-						$per_hal = 10;
 						if($_SESSION['class_id'] == ""){
 							$jumlah_record = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."'
 														  and departemen_id='".$_SESSION['departemen_id']."'");
@@ -141,21 +140,16 @@ switch($_GET['act']){
 														  and class_id = '".$_SESSION['class_id']."'");
 						}
 						
-						$jum = count($jumlah_record);
-						$halaman = ceil($jum/$per_hal);
-						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
-						$start = ($page - 1) * $per_hal;
-						
 						if($_SESSION['class_id'] == ""){
 							$data = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."' 
-													 limit $start,$per_hal");			
+													 limit $posisi,$batas");			
 						}else{
 							$data = $crud->fetch("v_relokasi_budget","","budget_id='".$_SESSION['budget_id']."' 
 													 and class_id='".$_SESSION['class_id']."'
-													 limit $start,$per_hal");			
+													 limit $posisi,$batas");			
 						}
 						
-						$no = 1;
+						$no = 1 + $posisi;
 						foreach($data as $value){							
 							echo "<tr>
 									<td align=\"center\">".$no++."</td>
@@ -174,7 +168,7 @@ switch($_GET['act']){
 				</table>
 				
 				<?php 
-					include "footer_pagination.php";
+					require_once "pagelink_bottom.php";
 				?>
 				
 			</div>

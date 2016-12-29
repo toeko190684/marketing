@@ -117,9 +117,8 @@ switch($_GET['act']){
 				</thead>
 				<tbody>
 					<?php						
-						//ini adalah halaman paging
-						
-						$per_hal = 10;
+						require_once "pagelink_top.php";						
+												
 						if($_POST['claim_id'] == ""){
 							if($_GET['id'] == ""){
 								$jumlah_record = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
@@ -134,27 +133,22 @@ switch($_GET['act']){
 						}
 						
 						
-						$jum = count($jumlah_record);
-						$halaman = ceil($jum/$per_hal);
-						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
-						$start = ($page - 1) * $per_hal;
 						
 						if($_POST['claim_id'] == ""){
 							if($_GET['id'] == ""){
 								$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
 													 and departemen_id = '".$_SESSION['departemen_id']."'
-													 limit $start,$per_hal");		
+													 limit $posisi,$batas");		
 							}else{
 								$data = $crud->fetch("v_claim_reco","","year(claim_date)='".$_SESSION['year']."'
 													 and departemen_id = '".$_SESSION['departemen_id']."' and reco_id='".$_GET['id']."'
-													 limit $start,$per_hal");		
+													 limit $posisi,$batas");		
 							}
 						}else{
-							$data = $crud->fetch("v_claim_reco","","claim_id='".$_POST['claim_id']."'
-												 limit $start,$per_hal");			
+							$data = $crud->fetch("v_claim_reco","","claim_id='".$_POST['claim_id']."'");			
 						}
 						
-						$no = 1;
+						$no = 1 + $posisi;
 						foreach($data as $value){							
 							if(strtoupper($value['status']) == "PENDING"){
 								$class = "label label-warning";
@@ -181,13 +175,13 @@ switch($_GET['act']){
 										<a href=\"$aksi&act=del&id=$value[claim_id]\" onclick=\"return confirm('This record will be deleted, Are you sure ? ')\"><span class=\"glyphicon glyphicon-trash\" aria-hidden=\"true\" ></span> Del</a> 									
 										</td>
 								</tr>";
-						}
+						}						
 					?>
 				</tbody>
 				</table>
 				
 				<?php 
-					include "footer_pagination.php";
+					require_once "pagelink_bottom.php";
 				?>
 				
 			</div>
@@ -500,7 +494,7 @@ switch($_GET['act']){
 					<div class="col-sm-12 col-md-4 col-lg-4">						
 						<table class="table table-stripped table-hover">
 							<tr>
-								<td><strong>Claim Number System </strong></td><td><?php echo $data[0]['claim_number_system']; ?></td>
+								<td><strong>Claim Id </strong></td><td><?php echo $data[0]['claim_id']; ?></td>
 							</tr>
 							<tr>
 								<td><strong>Claim Date : </strong></td><td><?php echo $crud->cetak_tanggal($data[0]['claim_date']); ?></td>
@@ -509,31 +503,32 @@ switch($_GET['act']){
 								<td><strong>Claim Number Dist : </strong></td><td><?php echo $data[0]['claim_number_dist']; ?></td>
 							</tr>
 							<tr>
-								<td><strong>Kode Promo : </strong></td>
-								<td>
-									<?php 
-										$reco = $crud->fetch("v_claim_promo","","claim_number_system='".$_GET['id']."'");
-										foreach($reco as $row){
-											if($row['cek'] == 0){ $class = "label label-danger"; }else{ $class = "label label-success";}
-											echo $row['kode_promo']." = ".
-												 number_format($row['costofpromo'],0,'.',',')." ".
-												 "<span class=$class>".$row['status']."</span>"; 
-										}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td><strong>COA : </strong></td><td><?php echo $data[0]['coa']." / ".$data[0]['coa_name']; ?></td>
-							</tr>
-							<tr>
 								<td><strong>Distributor : </strong></td><td><?php echo $data[0]['distributor_id']." / ".$data[0]['distributor_name']; ?></td>
 							</tr>
 							<tr>
-								<td><strong>Cost of Promo: </strong></td><td><?php echo number_format($data[0]['costofpromo'],0,'.',','); ?></td>
+								<td><strong>Budget Id : </strong></td><td><?php echo $data[0]['budget_id']; ?></td>
 							</tr>
 							<tr>
-								<td><strong>Cost of Promo Left: </strong></td><td><?php echo number_format($data[0]['costofpromoleft'],0,'.',','); ?></td>
-							</tr>					
+								<td><strong>Departemen : </strong></td><td><?php echo $data[0]['departemen_id']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Reco Id : </strong></td><td><?php echo $data[0]['reco_id']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Description : </strong></td><td><?php echo $data[0]['description']; ?></td>
+							</tr>
+							<tr>
+								<td><strong>Total Reco: </strong></td><td><?php echo number_format($data[0]['total_reco'],0,'.',','); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Total Allow Used Reco: </strong></td><td><?php echo number_format($data[0]['total_allow_used_reco'],0,'.',','); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Total Claim : </strong></td><td><?php echo number_format($data[0]['total_claim'],0,'.',','); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Reco Outstanding: </strong></td><td><?php echo number_format($data[0]['outstanding'],0,'.',','); ?></td>
+							</tr>			
 							<tr>
 								<td><strong>PO SO Number : </strong></td><td><?php echo $data[0]['po_so_number']; ?></td>
 							</tr>
@@ -558,6 +553,9 @@ switch($_GET['act']){
 							</tr>
 							<tr>
 								<td><strong>Total Claim Approved Ammount : </strong></td><td><?= number_format($data[0]['total_claim_approved_ammount'],0,'.',','); ?></td>
+							</tr>
+							<tr>
+								<td><strong>Account Id : </strong></td><td><?php echo $data[0]['account_id']." / ".$data[0]['account_name']; ?></td>
 							</tr>
 							<tr>
 								<td><strong>Vendor Id : </strong></td><td><?php echo $data[0]['vendor_id']." / ".$data[0]['vendor_name']; ?></td>
@@ -592,6 +590,9 @@ switch($_GET['act']){
 							</tr>							
 							<tr>
 								<td><strong>Created By : </strong></td><td><?php echo $data[0]['created_by']." / ".$crud->cetak_tanggal($data[0]['created_date']); ?></td>
+							</tr>						
+							<tr>
+								<td><strong>Updated By : </strong></td><td><?php echo $data[0]['update_by']." / ".$crud->cetak_tanggal($data[0]['update_date']); ?></td>
 							</tr>
 						</table>
 					</div>

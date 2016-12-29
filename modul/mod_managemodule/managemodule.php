@@ -28,25 +28,22 @@ switch($_GET['act']){
 				</thead>
 				<tbody>
 					<?php 
-						//ini adalah halaman paging
-						$per_hal = 10;
+						require_once "pagelink_top.php";
+						
 						if($_POST['module_name'] == ""){
 							$jumlah_record = $crud->fetch("module","","");
 						}else{
 							$jumlah_record = $crud->fetch("module","","module_name like '%".$_POST['module_name']."%'");
 						}
-						$jum = count($jumlah_record);
-						$halaman = ceil($jum/$per_hal);
-						$page = (isset($_GET['page'])) ? (int)$_GET['page'] : 1; // jika $page kosong maka beri nilai 1 jika ada gunakan nilai page 
-						$start = ($page - 1) * $per_hal;
+						
 						
 						if($_POST['module_name'] == ""){
-							$data = $crud->fetch("module","","1 limit $start,$per_hal");			
+							$data = $crud->fetch("module","","1 limit $posisi,$batas");			
 						}else{
-							$data = $crud->fetch("module","","module_name like '%".$_POST['module_name']."%' limit $start,$per_hal");	
+							$data = $crud->fetch("module","","module_name like '%".$_POST['module_name']."%' limit $posisi,$batas");	
 						}
 						
-						$no = 1;
+						$no = 1 + $posisi;
 						foreach($data as $value){
 							echo "<tr>
 									<td>".$value['module_id']." - ".$value['module_name']."</td>
@@ -65,7 +62,7 @@ switch($_GET['act']){
 				</table>				
 								
 				<?php
-					include "footer_pagination.php";
+					require_once "pagelink_bottom.php";
 				?>
 				
 			</div>
