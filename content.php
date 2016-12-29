@@ -31,6 +31,8 @@ if ($_GET['r']=='home'){
 	include "modul/mod_additionalbudget/additionalbudget.php";
 }elseif (($_GET['r'])=='recobudget'){
 	include "modul/mod_recobudget/recobudget.php";
+}elseif (($_GET['r'])=='recoclosing'){
+	include "modul/mod_recoclosing/recoclosing.php";
 }elseif (($_GET['r'])=='approvalreco'){
 	include "modul/mod_approvalreco/approvalreco.php";
 }elseif (($_GET['r'])=='relocationbudget'){

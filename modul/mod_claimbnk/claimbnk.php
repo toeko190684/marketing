@@ -39,6 +39,7 @@ switch($_GET['act']){
 						<td>Claim Number</td>
 						<tD>Claim Date</td>
 						<td>Distributor Id</td>
+						<td>Cost of promo</td>
 						<td>Claim Approved Ammount</td>
 						<tD>Status</td>
 						<td>Action</td>
