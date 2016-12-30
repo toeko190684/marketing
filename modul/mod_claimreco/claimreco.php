@@ -50,6 +50,16 @@
 			});			
 		});
 		
+		$("#po_so_number").focusout(function(){
+			po_id = $(this).val();
+			$.post('modul/mod_claimreco/get_posonumber.php',{ po_id : po_id },function(data){
+				alert(data);
+				var obj = $.parseJSON(data);
+				$('#vendor_id').val(obj.vendor_id);
+				//$('#deskripsi').val(obj.remark);
+			});			
+		});
+		
 		$("#claim_approved_ammount").focusout(function(){
 			var claim_ap = $(this).val();
 			var reco_out = $("#reco_outstanding").val();
@@ -252,7 +262,7 @@ switch($_GET['act']){
 									<input class="form-control" name="account_name" id="account_name" placeholder="Account Name" readonly>
 								</div>
 							</div>
-							<div class="form-group" id="account_id">
+							<div class="form-group" id="vendorid">
 								<label>Vendor Id : </label>
 								<select type="text" class="form-control" name="vendor_id" id="vendor_id" required>
 									<option></option>
